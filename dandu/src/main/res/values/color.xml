@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="search_bar_background">#767676</color>
+    <color name="transparent">#00000000</color>
+    <color name="action_bar_background">#252525</color>
+    <color name="menu_pressed">#15000000</color>
+    <color name="tab_background">#fdfdfd</color>
+    <color name="tab_text">#4d4d4d</color>
+</resources>

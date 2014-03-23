@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/find_frame"
+    android:background="@drawable/rounded_frame"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:background="@drawable/rounded_action_bar"
+        android:layout_height="48dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo"
+            android:paddingLeft="10dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/logo"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="发现"
+            android:paddingLeft="10dp"
+            android:layout_toRightOf="@id/logo"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/padding"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/drawer"
+            android:layout_centerVertical="true"
+            android:background="@drawable/drawer_selector"
+            android:layout_toLeftOf="@id/padding" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:background="@color/tab_background"
+        android:layout_height="32dp">
+        <TextView
+            android:id="@+id/newestTab"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@color/tab_background"
+            android:text="最新"
+            android:textSize="14dp"
+            android:textColor="@color/tab_text"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/hottestTab"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@color/tab_background"
+            android:text="最热"
+            android:textSize="14dp"
+            android:textColor="@color/tab_text"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/underline"
+        android:scaleType="matrix"
+        android:src="@drawable/underline_shape"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/findViewPaper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1.0"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation" />
+
+</LinearLayout>
