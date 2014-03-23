@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 /**
  * Created by johnson on 3/22/14.
  */
-public class NewestFragment extends android.support.v4.app.Fragment{
+public class NewestFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.newest_fragment, container, false);

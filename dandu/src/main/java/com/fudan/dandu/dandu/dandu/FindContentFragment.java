@@ -1,9 +1,7 @@
 package com.fudan.dandu.dandu.dandu;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +23,8 @@ public class FindContentFragment extends ContentFragment{
     ViewPager viewPager;
     List<View> viewList;
     int imageWidth, offset, screenWidth, currentIndex;
+    Fragment newestFragment, hottestFragment;
+    ArrayList<Fragment> fragmentArrayList;
     ImageView underline;
     public FindContentFragment(SlidingMenu slidingMenu) {
         super(slidingMenu, ContentFragment.FIND);
@@ -34,6 +35,7 @@ public class FindContentFragment extends ContentFragment{
         View view = inflater.inflate(R.layout.find_frame, container, false);
         initTextView(view);
         intiImageView(view);
+        initFragments();
         initViewPaper(view, inflater);
         return view;
     }
@@ -63,64 +65,69 @@ public class FindContentFragment extends ContentFragment{
         offset = screenWidth / 2;
     }
 
+    public void initFragments() {
+        newestFragment = new NewestFragment();
+        hottestFragment = new HottestFragment();
+        fragmentArrayList = new ArrayList<Fragment>();
+        fragmentArrayList.add(newestFragment);
+        fragmentArrayList.add(hottestFragment);
+    }
+
     public void initViewPaper(View view, LayoutInflater layoutInflater) {
         viewPager = (ViewPager)view.findViewById(R.id.findViewPaper);
-//        viewPager.setAdapter(new TabFragmentPaperAdapter(view.));
+        viewPager.setAdapter(new TabFragmentPaperAdapter(getFragmentManager(),fragmentArrayList ));
 //        viewList = new ArrayList<View>();
 //        viewList.add(layoutInflater.inflate(R.layout.newest_fragment, null));
 //        viewList.add(layoutInflater.inflate(R.layout.hottest_fragment, null));
-//        currentIndex = 0;
 //        viewPager.setAdapter(new FindPageAdapter(viewList));
-//        viewPager.setCurrentItem(0);
-//        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                Animation animation = null;
-//                if (position == 0 && currentIndex == 1) {
-//                    animation = new TranslateAnimation(offset, 0, 0, 0);
-//                }
-//                else if (position == 1 && currentIndex == 0) {
-//                    animation = new TranslateAnimation(0, offset, 0, 0);
-//                }
-//                currentIndex = position;
-//                animation.setFillAfter(true);
-//                animation.setDuration(300);
-//                underline.startAnimation(animation);
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//            }
-//        });
+        currentIndex = 0;
+        viewPager.setCurrentItem(0);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Animation animation = null;
+                if (position == 0 && currentIndex == 1) {
+                    animation = new TranslateAnimation(offset, 0, 0, 0);
+                }
+                else if (position == 1 && currentIndex == 0) {
+                    animation = new TranslateAnimation(0, offset, 0, 0);
+                }
+                currentIndex = position;
+                animation.setFillAfter(true);
+                animation.setDuration(300);
+                underline.startAnimation(animation);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
-    class TabFragmentPaperAdapter extends FragmentPagerAdapter {
-        Fragment newestFragment = new NewestFragment();
-        Fragment hottestFragment = new HottestFragment();
+    class TabFragmentPaperAdapter extends android.support.v13.app.FragmentPagerAdapter {
+        ArrayList<Fragment> fragmentArrayList;
 
-
-        public TabFragmentPaperAdapter(android.support.v4.app.FragmentManager fragmentManager) {
+        public TabFragmentPaperAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
+        public TabFragmentPaperAdapter(FragmentManager fragmentManager, ArrayList<Fragment> fragmentArrayList) {
+            super(fragmentManager);
+            this.fragmentArrayList = fragmentArrayList;
+        }
+
         @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return newestFragment;
-                case 1:
-                    return hottestFragment;
-            }
-            return null;
+        public android.app.Fragment getItem(int position) {
+            return fragmentArrayList.get(position);
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return fragmentArrayList.size();
         }
 
     }

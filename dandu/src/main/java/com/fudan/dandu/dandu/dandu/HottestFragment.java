@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by johnson on 3/22/14.
  */
-public class HottestFragment extends android.support.v4.app.Fragment{
+public class HottestFragment extends android.app.Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.hottest_fragment, container, false);
