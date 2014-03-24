@@ -31,7 +31,7 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
         slidingMenu.setBehindWidth(dip2px(getApplicationContext(), 200));
         findContentFragment = new FindContentFragment(slidingMenu);
         collectContentFragment = new CollectContentFragment(slidingMenu);
-        suggestContentFragment = new SuggestContentFragment(slidingMenu);
+        suggestContentFragment = new SuggestContentFragmentOnboard(slidingMenu);
         settingContentFragment = new SettingContentFragment(slidingMenu);
 //        addAllFragment();
 //        clearFragment();

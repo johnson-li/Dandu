@@ -21,8 +21,7 @@ import java.util.List;
 public class FindContentFragment extends ContentFragment{
 
     ViewPager viewPager;
-    List<View> viewList;
-    int imageWidth, offset, screenWidth, currentIndex;
+    int offset, screenWidth, currentIndex;
     Fragment newestFragment, hottestFragment;
     ArrayList<Fragment> fragmentArrayList;
     ImageView underline;
@@ -36,7 +35,7 @@ public class FindContentFragment extends ContentFragment{
         initTextView(view);
         intiImageView(view);
         initFragments();
-        initViewPaper(view, inflater);
+        initViewPaper(view);
         return view;
     }
 
@@ -73,13 +72,9 @@ public class FindContentFragment extends ContentFragment{
         fragmentArrayList.add(hottestFragment);
     }
 
-    public void initViewPaper(View view, LayoutInflater layoutInflater) {
+    public void initViewPaper(View view) {
         viewPager = (ViewPager)view.findViewById(R.id.findViewPaper);
         viewPager.setAdapter(new TabFragmentPaperAdapter(getFragmentManager(),fragmentArrayList ));
-//        viewList = new ArrayList<View>();
-//        viewList.add(layoutInflater.inflate(R.layout.newest_fragment, null));
-//        viewList.add(layoutInflater.inflate(R.layout.hottest_fragment, null));
-//        viewPager.setAdapter(new FindPageAdapter(viewList));
         currentIndex = 0;
         viewPager.setCurrentItem(0);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -110,10 +105,6 @@ public class FindContentFragment extends ContentFragment{
 
     class TabFragmentPaperAdapter extends android.support.v13.app.FragmentPagerAdapter {
         ArrayList<Fragment> fragmentArrayList;
-
-        public TabFragmentPaperAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
 
         public TabFragmentPaperAdapter(FragmentManager fragmentManager, ArrayList<Fragment> fragmentArrayList) {
             super(fragmentManager);
