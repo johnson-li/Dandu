@@ -5,7 +5,9 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
@@ -15,9 +17,11 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
 
     public static int fragmentNum;
     public static int screenWidth;
-    public ContentFragment findContentFragment, collectContentFragment, suggestContentFragment, settingContentFragment;
+    public ContentFragment findContentFragment, collectContentFragment,
+            suggestContentFragment, settingContentFragment,
+            findMagazineContentFragment, findArticleContentFragment,
+            collectMagazineContentFragment, collectArticleContentFragment;
     SlidingMenu slidingMenu;
-
 
     @Override
     public  void onCreate(Bundle savedInstanceState) {
@@ -160,5 +164,11 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
         while(getUsingFragment() != null) {
              getFragmentManager().beginTransaction().remove(getUsingFragment()).commit();
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        Log.d("johnson", "activity touch");
+        return super.onTouchEvent(event);
     }
 }

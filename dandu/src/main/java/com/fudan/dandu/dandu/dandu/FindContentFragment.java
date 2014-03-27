@@ -3,7 +3,9 @@ package com.fudan.dandu.dandu.dandu;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -11,14 +13,12 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by johnson on 3/15/14.
  */
-public class FindContentFragment extends ContentFragment{
+public class FindContentFragment extends ContentFragment implements View.OnTouchListener{
 
     ViewPager viewPager;
     int offset, screenWidth, currentIndex;
@@ -102,6 +102,13 @@ public class FindContentFragment extends ContentFragment{
             }
         });
     }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        Log.d("johnson", "touch in find");
+        return false;
+    }
+
 
     class TabFragmentPaperAdapter extends android.support.v13.app.FragmentPagerAdapter {
         ArrayList<Fragment> fragmentArrayList;

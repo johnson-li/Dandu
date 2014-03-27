@@ -16,7 +16,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
  */
 public abstract class ContentFragment extends Fragment{
 
-    public static boolean settingCliccked = false;
+    public static boolean settingClicked = false;
     public static final int FIND = 1;
     public static final int SUGGEST = 2;
     public static final int COLLECT = 3;

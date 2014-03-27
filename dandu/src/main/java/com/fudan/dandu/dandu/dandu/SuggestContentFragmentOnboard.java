@@ -23,7 +23,7 @@ public class SuggestContentFragmentOnboard extends ContentFragment{
         setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContentFragment.settingCliccked = true;
+                ContentFragment.settingClicked = true;
                 MenuFragment.changeFragment(ContentFragment.SETTING);
             }
         });

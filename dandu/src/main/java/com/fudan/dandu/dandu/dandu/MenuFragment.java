@@ -53,8 +53,8 @@ public class MenuFragment extends Fragment{
         suggest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Debug", "settingClicked = " + ContentFragment.settingCliccked);
-                if (ContentFragment.settingCliccked) {
+                Log.d("Debug", "settingClicked = " + ContentFragment.settingClicked);
+                if (ContentFragment.settingClicked) {
                     changeFragment(ContentFragment.SETTING);
                 }
                 else {

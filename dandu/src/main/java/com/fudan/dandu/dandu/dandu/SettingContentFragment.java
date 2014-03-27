@@ -23,7 +23,7 @@ public class SettingContentFragment extends ContentFragment{
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContentFragment.settingCliccked = false;
+                ContentFragment.settingClicked = false;
                 MenuFragment.changeFragment(ContentFragment.SUGGEST);
             }
         });
