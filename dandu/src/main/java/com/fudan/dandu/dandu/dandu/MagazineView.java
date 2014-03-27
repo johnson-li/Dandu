@@ -2,6 +2,8 @@ package com.fudan.dandu.dandu.dandu;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +15,15 @@ import android.widget.TextView;
 /**
  * Created by johnson on 3/22/14.
  */
-public class MagazineView extends ViewGroup{
+public class MagazineView extends View{
 
     String src, magazine_name, title;
-    ImageView magazineCover;
-    TextView titleTextView, magazineInfoTextView;
-    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     int version;
     public MagazineView(Context context) {
         super(context);
+        initImageView();
+        initTitle();
+        initMagazineInfo();
     }
 
     public void setSrc(String src) {
@@ -41,48 +43,19 @@ public class MagazineView extends ViewGroup{
     }
 
     void initImageView() {
-        magazineCover = new ImageView(getContext());
-        magazineCover.setImageBitmap(BitmapFactory.decodeFile(src));
-        addView(magazineCover);
+//        magazineCover = new ImageView(getContext());
+//        magazineCover.setImageBitmap(BitmapFactory.decodeFile(src));
     }
 
     void initTitle() {
-        titleTextView = new TextView(getContext());
-        titleTextView.setText(title);
-        addView(titleTextView);
     }
 
     void initMagazineInfo() {
-        magazineInfoTextView = new TextView(getContext());
-        String str = magazine_name + " - " + "第" + version + "期";
-        magazineInfoTextView.setText(str);
-        addView(magazineInfoTextView);
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        initImageView();
-        initTitle();
-        initMagazineInfo();
-        titleTextView.layout(l, t, r, b);
-    }
-
-    @Override
-    public void addView(View child) {
-        addView(child, -1);
-    }
-
-    @Override
-    public View getChildAt(int index) {
-        switch (index) {
-            case 0:
-                return magazineCover;
-            case 1:
-                return titleTextView;
-            case 2:
-                return magazineInfoTextView;
-            default:
-                return null;
-        }
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        canvas.drawColor(Color.BLUE);
     }
 }

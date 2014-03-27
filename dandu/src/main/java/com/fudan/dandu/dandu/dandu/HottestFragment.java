@@ -35,7 +35,7 @@ public class HottestFragment extends android.app.Fragment implements View.OnTouc
     int imageWidth, imageHeight;
     LinearLayout hottestLinearLayout;
     ScrollViewWithRefresh scrollView;
-    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 100);
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         stringList = initiateImageScr();
@@ -74,19 +74,20 @@ public class HottestFragment extends android.app.Fragment implements View.OnTouc
         viewPager.setLayoutParams(layoutParams);
         LinearLayout relativeLayout = (LinearLayout)view.findViewById(R.id.scrollViewLayout);
 
+        TextView textView = new TextView(getActivity().getApplicationContext());
+        textView.setText("46\n5");
+        textView.setLayoutParams(params);
 
         MagazineView magazineView = new MagazineView(getActivity().getApplicationContext());
-        magazineView.setSrc("/sdcard/DCIM/Camera/a.png");
-        magazineView.setTitle("校医院");
-        magazineView.setMagazine_name("九十九度");
-        magazineView.setMagazineVersion(9);
+//        magazineView.setSrc("/sdcard/DCIM/Camera/a.png");
+//        magazineView.setTitle("校医院");
+//        magazineView.setMagazine_name("九十九度");
+//        magazineView.setMagazineVersion(9);
         magazineView.setLayoutParams(params);
         relativeLayout.addView(magazineView);
 
 
-        TextView textView = new TextView(getActivity().getApplicationContext());
-        textView.setText("46\n5");
-        textView.setLayoutParams(params);
+
         relativeLayout.addView(textView);
         return view;
     }

@@ -29,6 +29,8 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
         setContentView(R.layout.blank_left);
         getWindow().setBackgroundDrawableResource(R.drawable.background);
         screenWidth = getScreenWidth();
+        Constants.screenWidth = screenWidth;
+        Constants.density = getResources().getDisplayMetrics().density;
         setBehindContentView(R.layout.blank_right);
         slidingMenu = this.getSlidingMenu();
         slidingMenu.setMode(SlidingMenu.RIGHT);
