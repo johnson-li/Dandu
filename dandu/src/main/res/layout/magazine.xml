@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/magazineLayout"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:id="@+id/magazineLinearLayout1"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="7dp">
+    <ImageView
+        android:id="@+id/magazineCover1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher"/>
+    <TextView
+        android:id="@+id/articleTitle1"
+        android:layout_marginTop="7dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/article_title"
+        android:text="article title 1"/>
+    <TextView
+        android:id="@+id/magazineInfo1"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="0dp"
+        android:textColor="@color/magazine_info"
+        android:layout_height="wrap_content"
+        android:text="magazine info 1"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/magazineLinearLayout2"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="7dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp">
+        <ImageView
+            android:id="@+id/magazineCover2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_launcher"/>
+        <TextView
+            android:id="@+id/articleTitle2"
+            android:layout_marginTop="7dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/article_title"
+            android:text="article title 2"/>
+        <TextView
+            android:id="@+id/magazineInfo2"
+            android:layout_marginTop="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/magazine_info"
+            android:text="magazine info 2"/>
+    </LinearLayout>
+</LinearLayout>

@@ -19,14 +19,19 @@ public class SettingContentFragment extends ContentFragment{
     @Override
     public View getView(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.setting_frame, container, false);
-        Button back = (Button)view.findViewById(R.id.back);
+        final Button back = (Button)view.findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContentFragment.settingClicked = false;
-                MenuFragment.changeFragment(ContentFragment.SUGGEST);
+                backward();
             }
         });
         return view;
+    }
+
+    @Override
+    public void backward() {
+        isSettingClicked = false;
+        MenuFragment.changeFragment(SUGGEST);
     }
 }

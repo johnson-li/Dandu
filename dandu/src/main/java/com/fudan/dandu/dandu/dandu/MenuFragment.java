@@ -3,17 +3,10 @@ package com.fudan.dandu.dandu.dandu;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 /**
  * Created by johnson on 3/15/14.
@@ -53,8 +46,7 @@ public class MenuFragment extends Fragment{
         suggest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Debug", "settingClicked = " + ContentFragment.settingClicked);
-                if (ContentFragment.settingClicked) {
+                if (ContentFragment.isSettingClicked) {
                     changeFragment(ContentFragment.SETTING);
                 }
                 else {

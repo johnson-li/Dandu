@@ -2,27 +2,37 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:id="@+id/collect_frame"
+    android:id="@+id/magazineLayout"
     android:background="@drawable/rounded_frame"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:background="@drawable/rounded_action_bar"
         android:layout_height="48dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/back_selector"
+            android:layout_centerVertical="true"
+            android:id="@+id/back"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/logo"
             android:paddingLeft="10dp"
+            android:layout_toRightOf="@id/back"
             android:layout_centerVertical="true"
             android:id="@+id/logo"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="收藏"
+            android:text="magazine"
             android:paddingLeft="10dp"
             android:layout_toRightOf="@id/logo"/>
         <TextView
@@ -38,7 +48,18 @@
             android:layout_centerVertical="true"
             android:background="@drawable/drawer_selector"
             android:layout_toLeftOf="@id/padding" />
+        <Button
+            android:id="@+id/magazineInfoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/magazine_info_selector"
+            android:layout_toLeftOf="@id/drawer"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
 
-        </RelativeLayout>
+    <ImageView
+        android:id="@+id/magazineBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

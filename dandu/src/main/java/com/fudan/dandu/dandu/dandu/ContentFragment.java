@@ -1,11 +1,8 @@
 package com.fudan.dandu.dandu.dandu;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,11 +13,17 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
  */
 public abstract class ContentFragment extends Fragment{
 
-    public static boolean settingClicked = false;
+    public static boolean isSettingClicked = false;
+    public static boolean isFindInMagazine = false;
+    public static boolean isFindInArticle = false;
+    public static boolean isFindInMagazineInfo = false;
     public static final int FIND = 1;
     public static final int SUGGEST = 2;
     public static final int COLLECT = 3;
     public static final int SETTING = 4;
+    public static final int FIND_MAGAZINE = 5;
+    public static final int FIND_ARTICLE = 6;
+    public static final int FIND_MAGAZINE_INFO = 7;
     public int layout;
     SlidingMenu slidingMenu;
     public ContentFragment(SlidingMenu slidingMenu, int layout) {
@@ -47,6 +50,9 @@ public abstract class ContentFragment extends Fragment{
             }
         });
         return view;
+    }
+
+    public void backward() {
     }
 
     abstract public View getView(LayoutInflater inflater, ViewGroup container);

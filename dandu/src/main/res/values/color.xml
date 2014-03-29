@@ -8,4 +8,7 @@
     <color name="menu_pressed">#15000000</color>
     <color name="tab_background">#fdfdfd</color>
     <color name="tab_text">#4d4d4d</color>
+    <color name="article_title">#4d4d4d</color>
+    <color name="magazine_info">#4d4d4d</color>
+    <color name="list_separator">#eaeaea</color>
 </resources>

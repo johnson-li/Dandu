@@ -5,9 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
@@ -20,6 +18,7 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
     public ContentFragment findContentFragment, collectContentFragment,
             suggestContentFragment, settingContentFragment,
             findMagazineContentFragment, findArticleContentFragment,
+            findMagazineInfoContentFragment,
             collectMagazineContentFragment, collectArticleContentFragment;
     SlidingMenu slidingMenu;
 
@@ -39,6 +38,8 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
         collectContentFragment = new CollectContentFragment(slidingMenu);
         suggestContentFragment = new SuggestContentFragmentOnboard(slidingMenu);
         settingContentFragment = new SettingContentFragment(slidingMenu);
+        findMagazineContentFragment = new FindMagazineContentFragment(slidingMenu);
+        findMagazineInfoContentFragment = new FindMagazineInfoContentFragment(slidingMenu);
 //        addAllFragment();
 //        clearFragment();
         changeLeftFragment(findContentFragment);
@@ -105,6 +106,12 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
                 return suggestContentFragment;
             case ContentFragment.SETTING:
                 return settingContentFragment;
+            case ContentFragment.FIND_MAGAZINE:
+                return findMagazineContentFragment;
+            case ContentFragment.FIND_MAGAZINE_INFO:
+                return findMagazineInfoContentFragment;
+            case ContentFragment.FIND_ARTICLE:
+                return findArticleContentFragment;
             default:
                 return null;
         }
@@ -124,6 +131,12 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
                 break;
             case ContentFragment.SETTING:
                 changeLeftFragment(settingContentFragment);
+                break;
+            case ContentFragment.FIND_MAGAZINE:
+                changeLeftFragment(findMagazineContentFragment);
+                break;
+            case ContentFragment.FIND_MAGAZINE_INFO:
+                changeLeftFragment(findMagazineInfoContentFragment);
             default:
         }
     }
@@ -152,7 +165,25 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
                 return false;
             case KeyEvent.KEYCODE_BACK:
                 if (!slidingMenu.isMenuShowing()) {
-                    finish();
+                    if (ContentFragment.isSettingClicked && fragmentNum == ContentFragment.SETTING) {
+                        settingContentFragment.backward();
+                        return false;
+                    }
+                    else if (ContentFragment.isFindInMagazine && fragmentNum == ContentFragment.FIND_MAGAZINE) {
+                        findMagazineContentFragment.backward();
+                        return false;
+                    }
+                    else if (ContentFragment.isFindInArticle && fragmentNum == ContentFragment.FIND_ARTICLE) {
+                        findArticleContentFragment.backward();
+                        return false;
+                    }
+                    else if (ContentFragment.isFindInMagazineInfo && fragmentNum == ContentFragment.FIND_MAGAZINE_INFO) {
+                        findMagazineInfoContentFragment.backward();
+                        return false;
+                    }
+                    else {
+                        finish();
+                    }
                 }
                 else {
                     slidingMenu.showContent();
@@ -166,11 +197,5 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
         while(getUsingFragment() != null) {
              getFragmentManager().beginTransaction().remove(getUsingFragment()).commit();
         }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        Log.d("johnson", "activity touch");
-        return super.onTouchEvent(event);
     }
 }

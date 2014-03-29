@@ -1,6 +1,5 @@
 package com.fudan.dandu.dandu.dandu;
 
-import android.app.ActionBar;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -15,11 +14,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +30,7 @@ public class HottestFragment extends android.app.Fragment implements View.OnTouc
     int imageWidth, imageHeight;
     LinearLayout hottestLinearLayout;
     ScrollViewWithRefresh scrollView;
-    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 100);
+//    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 100);
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         stringList = initiateImageScr();
@@ -72,23 +67,35 @@ public class HottestFragment extends android.app.Fragment implements View.OnTouc
         int height = imageHeight * displayMetrics.widthPixels / imageWidth;
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(displayMetrics.widthPixels, height + 1);
         viewPager.setLayoutParams(layoutParams);
-        LinearLayout relativeLayout = (LinearLayout)view.findViewById(R.id.scrollViewLayout);
+        LinearLayout scrollViewLayout = (LinearLayout)view.findViewById(R.id.scrollViewLayout);
 
-        TextView textView = new TextView(getActivity().getApplicationContext());
-        textView.setText("46\n5");
-        textView.setLayoutParams(params);
+        View view2 = getActivity().getLayoutInflater().inflate(R.layout.magazine, null);
+        TextView t1 = (TextView)view2.findViewById(R.id.articleTitle1);
+        t1.getPaint().setFakeBoldText(true);
+        t1.setText("ttt1");
+        ImageView i1 = (ImageView)view2.findViewById(R.id.magazineCover1);
+        int w = Constants.screenWidth / 2 - Constants.dip2px(16 + 7);
+        i1.setLayoutParams(new LinearLayout.LayoutParams(w, imageHeight * w / imageWidth));
+        i1.setImageBitmap(BitmapFactory.decodeFile("/sdcard/DCIM/Camera/a.png"));
 
-        MagazineView magazineView = new MagazineView(getActivity().getApplicationContext());
-//        magazineView.setSrc("/sdcard/DCIM/Camera/a.png");
-//        magazineView.setTitle("校医院");
-//        magazineView.setMagazine_name("九十九度");
-//        magazineView.setMagazineVersion(9);
-        magazineView.setLayoutParams(params);
-        relativeLayout.addView(magazineView);
+        TextView t2 = (TextView)view2.findViewById(R.id.articleTitle2);
+        t2.setText("ttt2");
+        t2.getPaint().setFakeBoldText(true);
+        ImageView i2 = (ImageView)view2.findViewById(R.id.magazineCover2);
+        i2.setLayoutParams(new LinearLayout.LayoutParams(w , imageHeight * w / imageWidth));
+        i2.setImageBitmap(BitmapFactory.decodeFile("/sdcard/DCIM/Camera/a.png"));
+        scrollViewLayout.addView(view2);
+
+        LinearLayout linearLayout1 = (LinearLayout)view2.findViewById(R.id.magazineLinearLayout1);
+        linearLayout1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContentFragment.isFindInMagazine = true;
+                MenuFragment.changeFragment(ContentFragment.FIND_MAGAZINE);
+            }
+        });
 
 
-
-        relativeLayout.addView(textView);
         return view;
     }
 
