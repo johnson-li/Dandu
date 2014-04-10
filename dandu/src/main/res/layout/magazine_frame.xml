@@ -56,7 +56,7 @@
             android:layout_centerVertical="true"/>
     </RelativeLayout>
 
-    <com.fudan.dandu.dandu.dandu.ScrollViewWithRefresh
+    <com.dandu.view.ScrollViewWithRefresh
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none">
@@ -73,7 +73,7 @@
         </LinearLayout>
 
 
-    </com.fudan.dandu.dandu.dandu.ScrollViewWithRefresh>
+    </com.dandu.view.ScrollViewWithRefresh>
 
 
 </LinearLayout>

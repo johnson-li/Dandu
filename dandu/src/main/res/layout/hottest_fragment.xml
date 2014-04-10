@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
 
-    <com.fudan.dandu.dandu.dandu.ScrollViewWithRefresh
+    <com.dandu.view.ScrollViewWithRefresh
         android:id="@+id/hottestScrollView"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content" />
 
         </LinearLayout>
-    </com.fudan.dandu.dandu.dandu.ScrollViewWithRefresh>
+    </com.dandu.view.ScrollViewWithRefresh>
 
 
 </LinearLayout>
