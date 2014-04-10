@@ -30,9 +30,9 @@ public class Constants {
         Bitmap originBitmap = BitmapFactory.decodeResource(res, id);
         float scaleWidth = width / (float)originBitmap.getWidth();
         float scaleHeight = height / (float)originBitmap.getHeight();
-        Log.d("johnson", scaleWidth + " " + scaleHeight);
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
+        matrix.reset();
         return Bitmap.createBitmap(originBitmap, 0, 0, width, height, matrix, true);
     }
 }

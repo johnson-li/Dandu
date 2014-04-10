@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/rounded_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:background="@drawable/rounded_action_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/back_selector"
+            android:layout_centerVertical="true"
+            android:id="@+id/back"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/back"
+            android:layout_centerVertical="true"
+            android:id="@+id/logo"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="magazine"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/logo"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/drawer"
+            android:layout_centerVertical="true"
+            android:background="@drawable/drawer_selector"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/font"
+            android:background="@drawable/font_selector"
+            android:layout_marginLeft="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:layout_alignParentRight="true"
+            android:id="@+id/share"
+            android:layout_marginRight="16dp"
+            android:textColor="@color/font_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:drawableLeft="@drawable/share_selector"
+            android:text="123"/>
+        <Button
+            android:id="@+id/collect"
+            android:layout_toLeftOf="@id/share"
+            android:layout_marginRight="16dp"
+            android:background="@color/white"
+            android:textColor="@color/font_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/collect_selector"
+            android:text="123"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/list_separator_shape"/>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_below="@id/top"
+        android:layout_above="@id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:id="@+id/articleCover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/strike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/author"
+            android:text="author"
+            android:drawableLeft="@drawable/author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/date"
+            android:text="date"
+            android:drawableLeft="@drawable/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/content"
+            android:text="content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:src="@drawable/list_separator_shape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/readNumber"
+            android:drawableLeft="@drawable/read_num"
+            android:text="123"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:text="related suggestion"
+            android:background="@color/suggest_back"
+            android:textColor="@color/suggest"
+            android:drawableLeft="@drawable/related_suggest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</RelativeLayout>

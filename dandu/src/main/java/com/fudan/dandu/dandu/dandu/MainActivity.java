@@ -17,8 +17,8 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
     public static int screenWidth;
     public ContentFragment findContentFragment, collectContentFragment,
             suggestContentFragment, settingContentFragment,
-            findMagazineContentFragment, findArticleContentFragment,
-            findMagazineInfoContentFragment,
+            findMagazineContentFragment,
+            findMagazineInfoContentFragment,findArticleContentFragment,
             collectMagazineContentFragment, collectArticleContentFragment;
     SlidingMenu slidingMenu;
 
@@ -40,6 +40,7 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
         settingContentFragment = new SettingContentFragment(slidingMenu);
         findMagazineContentFragment = new FindMagazineContentFragment(slidingMenu);
         findMagazineInfoContentFragment = new FindMagazineInfoContentFragment(slidingMenu);
+        findArticleContentFragment = new FindArticleContentFragment(slidingMenu);
 //        addAllFragment();
 //        clearFragment();
         changeLeftFragment(findContentFragment);
@@ -137,6 +138,9 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
                 break;
             case ContentFragment.FIND_MAGAZINE_INFO:
                 changeLeftFragment(findMagazineInfoContentFragment);
+                break;
+            case ContentFragment.FIND_ARTICLE:
+                changeLeftFragment(findArticleContentFragment);
             default:
         }
     }

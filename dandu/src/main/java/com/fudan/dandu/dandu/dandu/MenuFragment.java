@@ -34,7 +34,18 @@ public class MenuFragment extends Fragment{
         find.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeFragment(ContentFragment.FIND);
+                if (ContentFragment.isFindInArticle) {
+                    changeFragment(ContentFragment.FIND_ARTICLE);
+                }
+                else if(ContentFragment.isFindInMagazineInfo) {
+                    changeFragment(ContentFragment.FIND_MAGAZINE_INFO);
+                }
+                else if(ContentFragment.isFindInMagazine) {
+                    changeFragment(ContentFragment.FIND_MAGAZINE);
+                }
+                else {
+                    changeFragment(ContentFragment.FIND);
+                }
             }
         });
         collect.setOnClickListener(new View.OnClickListener() {

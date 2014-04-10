@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -48,20 +49,41 @@ public class FindMagazineContentFragment extends ContentFragment{
         Bitmap bitmap = BitmapFactory.decodeFile("sdcard/DCIM/Camera/a.png");
         magazineBackground.setImageBitmap(bitmap);
         magazineBackground.setLayoutParams(new LinearLayout.LayoutParams(Constants.screenWidth, bitmap.getHeight() * Constants.screenWidth / bitmap.getWidth() + 1));
+        addArticleList(inflater, container, view, "title", "article abstract");
+        addArticleList(inflater, container, view, "title", "article abstract");
+        addArticleList(inflater, container, view, "title", "article abstract");
+        addArticleList(inflater, container, view, "title", "article abstract");
+        addArticleList(inflater, container, view, "title", "article abstract");
+        return view;
+    }
 
-        LinearLayout magazineLayout = (LinearLayout)view.findViewById(R.id.magazineLayout);
+    void addArticleList(LayoutInflater inflater,ViewGroup container,  View view, String titleStr, String articleAbstractStr) {
+        LinearLayout magazineLayout = (LinearLayout)view.findViewById(R.id.magazineFragmentLayout);
         View listView = inflater.inflate(R.layout.article_in_list, container, false);
-        final ImageView strike = (ImageView)view.findViewById(R.id.strike);
+        final ImageView strike = (ImageView)listView.findViewById(R.id.strike);
         final TextView title = (TextView)listView.findViewById(R.id.title);
-        title.setText("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+        title.getPaint().setFakeBoldText(true);
+        title.setText(titleStr);
         title.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                strike.setImageBitmap(Constants.resizeImage(getResources(), R.drawable.black_block, title.getHeight(), Constants.dip2px(3)));
+                Bitmap bitmap = Constants.resizeImage(getResources(), R.drawable.strike, title.getHeight(), Constants.dip2px(3));
+                strike.setImageBitmap(bitmap);
             }
         });
+        TextView articleAbstract = (TextView)listView.findViewById(R.id.articleAbstract);
+        articleAbstract.setText(articleAbstractStr);
         magazineLayout.addView(listView);
-        return view;
+        LinearLayout articleListLayout = (LinearLayout)listView.findViewById(R.id.articleListLayout);
+        articleListLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("johnson", "clicked");
+                ContentFragment.isFindInArticle = true;
+                MenuFragment.changeFragment(FIND_ARTICLE);
+            }
+        });
+
     }
 
     @Override

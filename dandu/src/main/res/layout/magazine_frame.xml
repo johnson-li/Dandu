@@ -2,7 +2,6 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:id="@+id/magazineLayout"
     android:background="@drawable/rounded_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -57,9 +56,24 @@
             android:layout_centerVertical="true"/>
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/magazineBackground"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <com.fudan.dandu.dandu.dandu.ScrollViewWithRefresh
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+        <LinearLayout
+            android:id="@+id/magazineFragmentLayout"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/magazineBackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+    </com.fudan.dandu.dandu.dandu.ScrollViewWithRefresh>
+
 
 </LinearLayout>

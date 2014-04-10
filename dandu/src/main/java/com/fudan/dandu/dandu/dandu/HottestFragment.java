@@ -153,6 +153,8 @@ public class HottestFragment extends android.app.Fragment implements View.OnTouc
 
     }
 
+//    void add
+
     class ImagePagerAdapter extends PagerAdapter {
         List<ImageView> imageViewList;
 
