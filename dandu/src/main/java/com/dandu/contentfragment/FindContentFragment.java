@@ -13,9 +13,10 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dandu.mainfragment.HottestFragment;
+import com.dandu.fdureader.Magazine;
+import com.dandu.slidefragment.HottestFragment;
 import com.dandu.activity.MainActivity;
-import com.dandu.mainfragment.NewestFragment;
+import com.dandu.slidefragment.NewestFragment;
 import com.fudan.dandu.dandu.dandu.R;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import java.util.ArrayList;
@@ -27,7 +28,8 @@ public class FindContentFragment extends ContentFragment implements View.OnTouch
 
     ViewPager viewPager;
     int offset, screenWidth, currentIndex;
-    Fragment newestFragment, hottestFragment;
+    NewestFragment newestFragment;
+    HottestFragment hottestFragment;
     ArrayList<Fragment> fragmentArrayList;
     ImageView underline;
     public FindContentFragment(SlidingMenu slidingMenu) {
@@ -114,6 +116,14 @@ public class FindContentFragment extends ContentFragment implements View.OnTouch
         return false;
     }
 
+    public void addHottestMagazine(Magazine magazine1, Magazine magazine2) {
+        hottestFragment.addMagazine(magazine1, magazine2);
+    }
+
+    public void addHottestMagazine(Magazine magazine) {
+        Log.d("johnson", "addHottestMagazine");
+        hottestFragment.addMagazine(magazine);
+    }
 
     class TabFragmentPaperAdapter extends android.support.v13.app.FragmentPagerAdapter {
         ArrayList<Fragment> fragmentArrayList;
@@ -134,4 +144,5 @@ public class FindContentFragment extends ContentFragment implements View.OnTouch
         }
 
     }
+
 }

@@ -1,4 +1,4 @@
-package com.dandu.mainfragment;
+package com.dandu.slidefragment;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,8 +16,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.dandu.contentfragment.ContentFragment;
 import com.dandu.constant.Constants;
+import com.dandu.fdureader.Magazine;
+import com.dandu.listener.HottestMagazineOnClickListener;
 import com.fudan.dandu.dandu.dandu.R;
 import com.dandu.view.ScrollViewWithRefresh;
 
@@ -31,13 +32,15 @@ public class HottestFragment extends android.app.Fragment implements View.OnTouc
 
     int lastY;
     List<String> stringList;
+    List<LinearLayout> magazineLayoutList;
     static DisplayMetrics displayMetrics;
     int imageWidth, imageHeight;
-    LinearLayout hottestLinearLayout;
-    ScrollViewWithRefresh scrollView;
+    LinearLayout hottestLinearLayout, scrollViewLayout;
+    static ScrollViewWithRefresh scrollView;
 //    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 100);
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        magazineLayoutList = new ArrayList<LinearLayout>();
         stringList = initiateImageScr();
         displayMetrics = initiateDisplayMetrics();
         View view = inflater.inflate(R.layout.hottest_fragment, container, false);
@@ -72,37 +75,72 @@ public class HottestFragment extends android.app.Fragment implements View.OnTouc
         int height = imageHeight * displayMetrics.widthPixels / imageWidth;
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(displayMetrics.widthPixels, height + 1);
         viewPager.setLayoutParams(layoutParams);
-        LinearLayout scrollViewLayout = (LinearLayout)view.findViewById(R.id.scrollViewLayout);
+        scrollViewLayout = (LinearLayout)view.findViewById(R.id.scrollViewLayout);
 
-        View view2 = getActivity().getLayoutInflater().inflate(R.layout.magazine, null);
-        TextView t1 = (TextView)view2.findViewById(R.id.articleTitle1);
+        return view;
+    }
+
+    public void addMagazine(Magazine magazine1, Magazine magazine2) {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.magazine, null);
+        TextView t1 = (TextView)view.findViewById(R.id.articleTitle1);
+        TextView m1 = (TextView)view.findViewById(R.id.magazineInfo1);
+        m1.setText(magazine1.description);
         t1.getPaint().setFakeBoldText(true);
-        t1.setText("ttt1");
-        ImageView i1 = (ImageView)view2.findViewById(R.id.magazineCover1);
+        t1.setText(magazine1.name);
+        ImageView i1 = (ImageView)view.findViewById(R.id.magazineCover1);
         int w = Constants.screenWidth / 2 - Constants.dip2px(16 + 7);
         i1.setLayoutParams(new LinearLayout.LayoutParams(w, imageHeight * w / imageWidth));
         i1.setImageBitmap(BitmapFactory.decodeFile("/sdcard/DCIM/Camera/a.png"));
 
-        TextView t2 = (TextView)view2.findViewById(R.id.articleTitle2);
-        t2.setText("ttt2");
+        TextView t2 = (TextView)view.findViewById(R.id.articleTitle2);
+        TextView m2 = (TextView)view.findViewById(R.id.magazineInfo2);
+        t2.setText(magazine2.name);
         t2.getPaint().setFakeBoldText(true);
-        ImageView i2 = (ImageView)view2.findViewById(R.id.magazineCover2);
-        i2.setLayoutParams(new LinearLayout.LayoutParams(w , imageHeight * w / imageWidth));
+        m2.setText(magazine2.description);
+        ImageView i2 = (ImageView)view.findViewById(R.id.magazineCover2);
+        i2.setLayoutParams(new LinearLayout.LayoutParams(w, imageHeight * w / imageWidth));
         i2.setImageBitmap(BitmapFactory.decodeFile("/sdcard/DCIM/Camera/a.png"));
-        scrollViewLayout.addView(view2);
 
-        LinearLayout linearLayout1 = (LinearLayout)view2.findViewById(R.id.magazineLinearLayout1);
-        linearLayout1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ContentFragment.isFindInMagazine = true;
-                MenuFragment.changeFragment(ContentFragment.FIND_MAGAZINE);
-            }
-        });
+        LinearLayout linearLayout1 = (LinearLayout)view.findViewById(R.id.magazineLinearLayout1);
+        LinearLayout linearLayout2 = (LinearLayout)view.findViewById(R.id.magazineLinearLayout2);
+        linearLayout1.setOnClickListener(new HottestMagazineOnClickListener(magazine1.term_id));
+        linearLayout2.setOnClickListener(new HottestMagazineOnClickListener(magazine2.term_id));
+        magazineLayoutList.add(linearLayout1);
+        magazineLayoutList.add(linearLayout2);
 
-
-        return view;
+        scrollViewLayout.addView(view);
     }
+
+    public void addMagazine(Magazine magazine) {
+
+        View view = getActivity().getLayoutInflater().inflate(R.layout.magazine, null);
+        TextView t1 = (TextView)view.findViewById(R.id.articleTitle1);
+        TextView m1 = (TextView)view.findViewById(R.id.magazineInfo1);
+        t1.getPaint().setFakeBoldText(true);
+        t1.setText(magazine.name);
+        m1.setText(magazine.description);
+        ImageView i1 = (ImageView)view.findViewById(R.id.magazineCover1);
+
+        TextView t2 = (TextView)view.findViewById(R.id.articleTitle2);
+        TextView m2 = (TextView)view.findViewById(R.id.magazineInfo2);
+        ImageView i2 = (ImageView)view.findViewById(R.id.magazineCover2);
+        t2.setVisibility(View.INVISIBLE);
+        m2.setVisibility(View.INVISIBLE);
+        i2.setVisibility(View.INVISIBLE);
+
+        int w = Constants.screenWidth / 2 - Constants.dip2px(16 + 7);
+        i1.setLayoutParams(new LinearLayout.LayoutParams(w, imageHeight * w / imageWidth));
+        i1.setImageBitmap(BitmapFactory.decodeFile("/sdcard/DCIM/Camera/a.png"));
+
+
+
+        LinearLayout linearLayout1 = (LinearLayout)view.findViewById(R.id.magazineLinearLayout1);
+        linearLayout1.setOnClickListener(new HottestMagazineOnClickListener(magazine.term_id));
+        magazineLayoutList.add(linearLayout1);
+
+        scrollViewLayout.addView(view);
+    }
+
 
     List<String> initiateImageScr() {
         List<String> stringList = new ArrayList<String>();

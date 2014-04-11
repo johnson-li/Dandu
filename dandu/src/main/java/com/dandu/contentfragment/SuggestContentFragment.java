@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.dandu.mainfragment.MenuFragment;
+import com.dandu.menu.MenuFragment;
 import com.fudan.dandu.dandu.dandu.R;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 

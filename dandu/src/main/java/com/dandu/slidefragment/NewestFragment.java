@@ -1,4 +1,4 @@
-package com.dandu.mainfragment;
+package com.dandu.slidefragment;
 
 import android.app.Fragment;
 import android.os.Bundle;

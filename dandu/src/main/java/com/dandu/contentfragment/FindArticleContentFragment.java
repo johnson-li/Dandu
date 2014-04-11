@@ -5,7 +5,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.dandu.mainfragment.MenuFragment;
+import com.dandu.activity.MainActivity;
+import com.dandu.fdureader.Magazine;
+import com.dandu.fdureader.Post;
+import com.dandu.menu.MenuFragment;
 import com.fudan.dandu.dandu.dandu.R;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -14,6 +17,8 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
  */
 public class FindArticleContentFragment extends ContentFragment{
 
+    public static int magazineID;
+    public static int postID;
     public FindArticleContentFragment(SlidingMenu slidingMenu) {
         super(slidingMenu, FIND_ARTICLE);
     }
@@ -35,5 +40,14 @@ public class FindArticleContentFragment extends ContentFragment{
             }
         });
         return view;
+    }
+
+    public void setArticleID(int magazineID, int postID) {
+        this.postID = postID;
+        this.magazineID = magazineID;
+        MainActivity.backend.getPostContent(postID);
+        Magazine magazine = MainActivity.backend.getMagazineByID(magazineID);
+        Post post = magazine.posts.get(postID);
+
     }
 }

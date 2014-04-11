@@ -12,6 +12,8 @@ import android.util.Log;
 public class Constants {
     public static int screenWidth;
     public static float density;
+    public static final String TAG = "BackendDebugging";
+
 
     public static int dip2px(float dpValue) {
         return (int) (dpValue * density + 0.5f);

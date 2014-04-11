@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.dandu.constant.Constants;
+
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -96,7 +98,7 @@ public class Backend
 	public void getTerms()
 	{
 		GetTermsRunnable getTerm = new GetTermsRunnable();
-		new Thread( getTerm).start();
+		new Thread(getTerm).start();
 		return;
 	}
 	
@@ -395,7 +397,7 @@ public class Backend
 					Map< String, Object > curTermMap = (Map<String, Object>)curTermObject;
 					Term curTerm = new Term();
 					curTerm.term_taxonomy_id = (String)curTermMap.get( "term_taxonomy_id" );
-					curTerm.term_id = Integer.valueOf( (String)curTermMap.get( "term_id" ));
+					curTerm.term_id = Integer.valueOf((String)curTermMap.get( "term_id" ));
 					curTerm.count = (Integer)curTermMap.get( "count" );
 					curTerm.description = (String)curTermMap.get( "description" );
 					curTerm.name = (String)curTermMap.get( "name" );

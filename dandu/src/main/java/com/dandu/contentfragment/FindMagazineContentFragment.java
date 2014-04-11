@@ -2,6 +2,7 @@ package com.dandu.contentfragment;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,24 +13,54 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.dandu.activity.MainActivity;
 import com.dandu.constant.Constants;
-import com.dandu.mainfragment.MenuFragment;
+import com.dandu.fdureader.Magazine;
+import com.dandu.fdureader.Post;
+import com.dandu.listener.ArticleOnClickListener;
+import com.dandu.menu.MenuFragment;
 import com.fudan.dandu.dandu.dandu.R;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by johnson on 3/22/14.
  */
 public class FindMagazineContentFragment extends ContentFragment{
 
+    View view;
+    LayoutInflater inflater;
+    ViewGroup container;
+    Magazine magazine;
+    LinearLayout magazineLayout;
+    public static int magazineID;
+    List<View> viewList;
     public FindMagazineContentFragment(SlidingMenu slidingMenu) {
         super(slidingMenu, FIND_MAGAZINE);
     }
 
+    public void setMagazineID(int magazineID) {
+        this.magazineID =magazineID;
+        if (viewList == null) {
+            viewList = new ArrayList<View>();
+        }
+        viewList.clear();
+        magazine = MainActivity.backend.getMagazineByID(magazineID);
+        MainActivity.backend.getPostsByMagazineID(magazineID, 10);
+        List<Post> postList = magazine.posts;
+        Log.d("johnson", "postList.size() = " + postList.size());
+        for (int i = 0; i < postList.size(); i++) {
+            addArticleList(postList.get(i));
+        }
+    }
 
     @Override
     public View getView(LayoutInflater inflater, ViewGroup container) {
-        View view = inflater.inflate(R.layout.magazine_frame, container, false);
+        this.inflater = inflater;
+        this.container = container;
+        view = inflater.inflate(R.layout.magazine_frame, container, false);
         Button back = (Button)view.findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,16 +82,13 @@ public class FindMagazineContentFragment extends ContentFragment{
         Bitmap bitmap = BitmapFactory.decodeFile("sdcard/DCIM/Camera/a.png");
         magazineBackground.setImageBitmap(bitmap);
         magazineBackground.setLayoutParams(new LinearLayout.LayoutParams(Constants.screenWidth, bitmap.getHeight() * Constants.screenWidth / bitmap.getWidth() + 1));
-        addArticleList(inflater, container, view, "title", "article abstract");
-        addArticleList(inflater, container, view, "title", "article abstract");
-        addArticleList(inflater, container, view, "title", "article abstract");
-        addArticleList(inflater, container, view, "title", "article abstract");
-        addArticleList(inflater, container, view, "title", "article abstract");
         return view;
     }
 
-    void addArticleList(LayoutInflater inflater,ViewGroup container,  View view, String titleStr, String articleAbstractStr) {
-        LinearLayout magazineLayout = (LinearLayout)view.findViewById(R.id.magazineFragmentLayout);
+    void addArticleList(Post post) {
+        String titleStr = post.postTitle;
+        String articleAbstractStr = "papapa";
+        magazineLayout = (LinearLayout)view.findViewById(R.id.magazineFragmentLayout);
         View listView = inflater.inflate(R.layout.article_in_list, container, false);
         final ImageView strike = (ImageView)listView.findViewById(R.id.strike);
         final TextView title = (TextView)listView.findViewById(R.id.title);
@@ -77,14 +105,8 @@ public class FindMagazineContentFragment extends ContentFragment{
         articleAbstract.setText(articleAbstractStr);
         magazineLayout.addView(listView);
         LinearLayout articleListLayout = (LinearLayout)listView.findViewById(R.id.articleListLayout);
-        articleListLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("johnson", "clicked");
-                isFindInArticle = true;
-                MenuFragment.changeFragment(FIND_ARTICLE);
-            }
-        });
+
+        articleListLayout.setOnClickListener(new ArticleOnClickListener(magazineID, post.postID));
 
     }
 
