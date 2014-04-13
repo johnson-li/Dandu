@@ -15,4 +15,5 @@
     <color name="suggest_back">#e5e5e5</color>
     <color name="font_normal">#8f8f8f</color>
     <color name="font_pressed">#b8b8b8</color>
+    <color name="magazine_num">#e2e2e2</color>
 </resources>

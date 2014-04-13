@@ -2,6 +2,8 @@ package com.dandu.contentfragment;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 
 import com.dandu.activity.MainActivity;
 import com.dandu.constant.Constants;
+import com.dandu.fdureader.Backend;
 import com.dandu.fdureader.Magazine;
 import com.dandu.fdureader.Post;
 import com.dandu.listener.ArticleOnClickListener;
@@ -36,6 +39,7 @@ public class FindMagazineContentFragment extends ContentFragment{
     Magazine magazine;
     LinearLayout magazineLayout;
     public static int magazineID;
+    public static Handler articleListHandler;
     List<View> viewList;
     public FindMagazineContentFragment(SlidingMenu slidingMenu) {
         super(slidingMenu, FIND_MAGAZINE);
@@ -61,7 +65,7 @@ public class FindMagazineContentFragment extends ContentFragment{
         this.inflater = inflater;
         this.container = container;
         view = inflater.inflate(R.layout.magazine_frame, container, false);
-        Button back = (Button)view.findViewById(R.id.back);
+        final Button back = (Button)view.findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,6 +79,7 @@ public class FindMagazineContentFragment extends ContentFragment{
             public void onClick(View v) {
                 isFindInMagazineInfo = true;
                 MenuFragment.changeFragment(FIND_MAGAZINE_INFO);
+                MainActivity.findMagazineInfoContentFragment.setPressID(magazine.parent);
             }
         });
 
@@ -82,6 +87,21 @@ public class FindMagazineContentFragment extends ContentFragment{
         Bitmap bitmap = BitmapFactory.decodeFile("sdcard/DCIM/Camera/a.png");
         magazineBackground.setImageBitmap(bitmap);
         magazineBackground.setLayoutParams(new LinearLayout.LayoutParams(Constants.screenWidth, bitmap.getHeight() * Constants.screenWidth / bitmap.getWidth() + 1));
+
+        articleListHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case Backend.BACKEND_MSG_GETPOSTSBYMAGAZINEID_COMPLETED :
+                        for (Post post: magazine.posts) {
+                            addArticleList(post);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
         return view;
     }
 

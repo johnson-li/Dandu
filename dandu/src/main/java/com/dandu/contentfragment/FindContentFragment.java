@@ -12,7 +12,6 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.dandu.fdureader.Magazine;
 import com.dandu.slidefragment.HottestFragment;
 import com.dandu.activity.MainActivity;
@@ -121,7 +120,6 @@ public class FindContentFragment extends ContentFragment implements View.OnTouch
     }
 
     public void addHottestMagazine(Magazine magazine) {
-        Log.d("johnson", "addHottestMagazine");
         hottestFragment.addMagazine(magazine);
     }
 

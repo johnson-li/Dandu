@@ -7,6 +7,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.dandu.constant.Constants;
+import com.dandu.contentfragment.FindMagazineContentFragment;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -703,6 +704,8 @@ public class Backend
 				Message msg = new Message();
 				msg.what = BACKEND_MSG_GETPOSTSBYMAGAZINEID_COMPLETED;
 				backendHandler.sendMessage(msg);
+                FindMagazineContentFragment.articleListHandler.sendMessage(msg);
+                Log.d( TAG, "get " + m.posts.size() + " posts");
 				Log.d( TAG, "GetPostsByMagazineIDRunnable() return" );
 				return;		
 				
