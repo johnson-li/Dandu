@@ -41,4 +41,44 @@
 
         </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:background="@color/tab_background"
+        android:layout_height="32dp">
+        <TextView
+            android:id="@+id/collectMagazineTab"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@color/tab_background"
+            android:text="刊物"
+            android:textSize="14dp"
+            android:textColor="@color/tab_text"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/collectArticleTab"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@color/tab_background"
+            android:text="文章"
+            android:textSize="14dp"
+            android:textColor="@color/tab_text"
+            android:gravity="center"/>
+    </LinearLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/underline"
+        android:scaleType="matrix"
+        android:src="@drawable/underline_shape"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/collectViewPaper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1.0"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation" />
 </LinearLayout>

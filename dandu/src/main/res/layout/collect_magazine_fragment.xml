@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/centerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:text="还没有收藏过哦~"
+            android:textSize="14sp"
+            android:textColor="@color/no_collection"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/big_collect"
+            android:layout_marginBottom="16dp"
+            android:layout_above="@id/centerTextView"/>
+        <Button
+            android:id="@+id/toFind"
+            android:layout_width="160dp"
+            android:layout_height="44dp"
+            android:layout_below="@id/centerTextView"
+            android:layout_centerHorizontal="true"
+            android:text="发现新东西"
+            android:background="@drawable/to_find_button"
+            android:layout_marginTop="16dp"/>
+        </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+
+        </LinearLayout>
+</RelativeLayout>

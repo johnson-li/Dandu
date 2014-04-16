@@ -88,6 +88,8 @@ public class FindMagazineContentFragment extends ContentFragment{
         magazineBackground.setImageBitmap(bitmap);
         magazineBackground.setLayoutParams(new LinearLayout.LayoutParams(Constants.screenWidth, bitmap.getHeight() * Constants.screenWidth / bitmap.getWidth() + 1));
 
+        addArticleList("title", "articleAbstractStr");
+
         articleListHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -127,6 +129,31 @@ public class FindMagazineContentFragment extends ContentFragment{
         LinearLayout articleListLayout = (LinearLayout)listView.findViewById(R.id.articleListLayout);
 
         articleListLayout.setOnClickListener(new ArticleOnClickListener(magazineID, post.postID));
+
+    }
+
+    //This function is only designed for debug
+    void addArticleList(String titleStr, String articleAbstractStr) {
+        magazineLayout = (LinearLayout)view.findViewById(R.id.magazineFragmentLayout);
+        View listView = inflater.inflate(R.layout.article_in_list, container, false);
+        final ImageView strike = (ImageView)listView.findViewById(R.id.strike);
+        final TextView title = (TextView)listView.findViewById(R.id.title);
+        title.getPaint().setFakeBoldText(true);
+        title.setText(titleStr);
+        title.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Bitmap bitmap = Constants.resizeImage(getResources(), R.drawable.strike, title.getHeight(), Constants.dip2px(3));
+                strike.setImageBitmap(bitmap);
+            }
+        });
+        TextView articleAbstract = (TextView)listView.findViewById(R.id.articleAbstract);
+        articleAbstract.setText(articleAbstractStr);
+        magazineLayout.addView(listView);
+        LinearLayout articleListLayout = (LinearLayout)listView.findViewById(R.id.articleListLayout);
+
+        //post.id = 0 is a debug flag
+        articleListLayout.setOnClickListener(new ArticleOnClickListener(magazineID, 0));
 
     }
 

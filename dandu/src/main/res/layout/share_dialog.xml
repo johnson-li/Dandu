@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/share_dialog_background"
+    android:layout_width="186dp"
+    android:layout_height="118dp">
+
+    <TextView
+        android:id="@+id/countDown"
+        android:text="3"
+        android:textColor="@color/count_down"
+        android:layout_marginTop="13dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/countDown"
+        android:layout_centerHorizontal="true"
+        android:text="share succeed"
+        android:layout_marginTop="10dp"
+        android:textSize="13sp"
+        android:textColor="@color/white"/>
+    <Button
+        android:layout_width="160dp"
+        android:layout_height="32dp"
+        android:text="查看"
+        android:background="@drawable/share_dialog_button_selector"
+        android:layout_marginBottom="13dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"/>
+</RelativeLayout>

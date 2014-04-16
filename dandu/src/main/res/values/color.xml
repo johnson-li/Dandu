@@ -16,4 +16,16 @@
     <color name="font_normal">#8f8f8f</color>
     <color name="font_pressed">#b8b8b8</color>
     <color name="magazine_num">#e2e2e2</color>
+    <color name="author">#a5a5a5</color>
+    <color name="date">#a5a5a5</color>
+    <color name="article_content">#4d4d4d</color>
+    <color name="topic_button_pressed">#eaeaea</color>
+    <color name="topic_text_color">#4d4d4d</color>
+    <color name="share_dialog_background">#88000000</color>
+    <color name="count_down">#4b4b4b</color>
+    <color name="share_dialog_button_normal">#888888</color>
+    <color name="share_dialog_button_pressed">#252525</color>
+    <color name="no_collection">#aaaaaa</color>
+    <color name="to_find_normal">#4b4b4b</color>
+    <color name="to_find_pressed">#717171</color>
 </resources>

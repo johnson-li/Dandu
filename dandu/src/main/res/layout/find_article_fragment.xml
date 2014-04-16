@@ -95,65 +95,102 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-
-        <ImageView
-            android:id="@+id/articleCover"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
             <ImageView
-                android:id="@+id/strike"
+                android:id="@+id/articleCover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp" >
+
+                <ImageView
+                    android:id="@+id/strike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/title"
+                    android:text="title"
+                    android:textSize="18sp"
+                    android:lineSpacingExtra="10sp"
+                    android:textColor="@color/article_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/author"
+                android:text="author / johnson"
+                android:drawableLeft="@drawable/author"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textColor="@color/author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/date"
+                android:text="2011-11-11"
+                android:textColor="@color/date"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/content"
+                android:text="content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:lineSpacingExtra="11sp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/article_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:src="@drawable/list_separator_shape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="WTF"
+                android:textColor="@color/article_content"
+                android:layout_marginTop="10dp"
+                android:lineSpacingExtra="13sp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp">
+
+                <TextView
+                    android:id="@+id/readNumber"
+                    android:layout_alignParentRight="true"
+                    android:drawableLeft="@drawable/read_num"
+                    android:text="123"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+
+            <TextView
+                android:text=" 相关推荐"
+                android:layout_marginTop="10dp"
+                android:background="@color/suggest_back"
+                android:textColor="@color/suggest"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:drawableLeft="@drawable/related_suggest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/author"
-            android:text="author"
-            android:drawableLeft="@drawable/author"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/date"
-            android:text="date"
-            android:drawableLeft="@drawable/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/content"
-            android:text="content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <ImageView
-            android:src="@drawable/list_separator_shape"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/readNumber"
-            android:drawableLeft="@drawable/read_num"
-            android:text="123"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:text="related suggestion"
-            android:background="@color/suggest_back"
-            android:textColor="@color/suggest"
-            android:drawableLeft="@drawable/related_suggest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        </LinearLayout>
     </ScrollView>
 
-
-
 </RelativeLayout>
+

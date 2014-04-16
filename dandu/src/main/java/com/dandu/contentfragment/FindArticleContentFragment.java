@@ -43,6 +43,11 @@ public class FindArticleContentFragment extends ContentFragment{
     }
 
     public void setArticleID(int magazineID, int postID) {
+        //postID == 0 means that it's debugging and there is no need to do anything with backend
+        if (postID == 0) {
+
+            return;
+        }
         this.postID = postID;
         this.magazineID = magazineID;
         MainActivity.backend.getPostContent(postID);

@@ -33,7 +33,7 @@ public class PressFragment extends Fragment {
         title.getPaint().setFakeBoldText(true);
         title.setText(press.name);
         TextView magazineNum = (TextView)view.findViewById(R.id.magazineNum);
-        magazineNum.setText(press.count);
+//        magazineNum.setText(press.count);
 
         return view;
     }
