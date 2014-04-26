@@ -10,16 +10,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/strike"
-            android:layout_marginLeft="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
             android:textSize="16sp"
-            android:layout_marginLeft="6dp"
+            android:textStyle="bold"
+            android:paddingLeft="6dp"
+            android:background="@drawable/strike"
             android:textColor="@color/article_title"
             android:id="@+id/title"
             android:text="title"/>

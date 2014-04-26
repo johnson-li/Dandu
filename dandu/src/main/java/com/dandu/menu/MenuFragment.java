@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.dandu.contentfragment.ContentFragment;
 import com.fudan.dandu.dandu.dandu.R;
@@ -34,6 +35,13 @@ public class MenuFragment extends Fragment{
         Button collect = (Button)view.findViewById(R.id.collect);
         Button suggest = (Button)view.findViewById(R.id.suggest);
         Button night = (Button)view.findViewById(R.id.night);
+        ImageView head = (ImageView)view.findViewById(R.id.head);
+        head.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
         find.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

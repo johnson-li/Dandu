@@ -2,6 +2,8 @@ package com.dandu.contentfragment;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +14,8 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.dandu.constant.Constants;
 import com.dandu.fdureader.Magazine;
 import com.dandu.slidefragment.HottestFragment;
 import com.dandu.activity.MainActivity;
@@ -33,6 +37,14 @@ public class FindContentFragment extends ContentFragment implements View.OnTouch
     ImageView underline;
     public FindContentFragment(SlidingMenu slidingMenu) {
         super(slidingMenu, FIND);
+    }
+
+    public FindContentFragment() {
+        super(MainActivity.slidingMenu, FIND);
+    }
+
+    public void initNewestSlide() {
+        newestFragment.initSlide();
     }
 
     @Override
@@ -64,10 +76,13 @@ public class FindContentFragment extends ContentFragment implements View.OnTouch
 
     public void intiImageView(View view) {
         underline = (ImageView)view.findViewById(R.id.underline);
-
-//        imageWidth = BitmapFactory.decodeResource(getResources(), R.drawable.underline_shape).getWidth();
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.underline_black);
         screenWidth = MainActivity.screenWidth;
         offset = screenWidth / 2;
+        if (bitmap == null) {
+            Log.d("johnson", "bitmap null");
+        }
+        underline.setImageBitmap(Constants.cutBitmap(bitmap, offset, bitmap.getHeight()));
     }
 
     public void initFragments() {
@@ -121,6 +136,14 @@ public class FindContentFragment extends ContentFragment implements View.OnTouch
 
     public void addHottestMagazine(Magazine magazine) {
         hottestFragment.addMagazine(magazine);
+    }
+
+    public void addNewestMagazine(Magazine magazine1, Magazine magazine2) {
+        newestFragment.addMagazine(magazine1, magazine2);
+    }
+
+    public void addNewestMagazine(Magazine magazine) {
+        newestFragment.addMagazine(magazine);
     }
 
     class TabFragmentPaperAdapter extends android.support.v13.app.FragmentPagerAdapter {

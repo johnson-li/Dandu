@@ -9,9 +9,12 @@ import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+
+import com.dandu.constant.Trash;
 import com.dandu.contentfragment.CollectContentFragment;
 import com.dandu.contentfragment.ContentFragment;
 import com.dandu.contentfragment.FindArticleContentFragment;
+import com.dandu.contentfragment.FindArticleContentFragmentWeb;
 import com.dandu.contentfragment.FindContentFragment;
 import com.dandu.contentfragment.FindMagazineContentFragment;
 import com.dandu.contentfragment.FindMagazineInfoContentFragment;
@@ -38,16 +41,19 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
     public static FindMagazineContentFragment findMagazineContentFragment;
     public static FindContentFragment findContentFragment;
     public static FindMagazineInfoContentFragment findMagazineInfoContentFragment;
-    public static FindArticleContentFragment findArticleContentFragment;
-    SlidingMenu slidingMenu;
+    public static FindArticleContentFragmentWeb findArticleContentFragment;
+    public static SlidingMenu slidingMenu;
     public static Backend backend;
     Handler backendHandler;
+    ArrayList<Integer> hotIDs = new ArrayList<Integer>();
     private Magazine latestMagazine;
     private Post demoPost;
+    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+    public static boolean refreshed = false;
 
 
     @Override
-    public  void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.blank_left);
         getWindow().setBackgroundDrawableResource(R.drawable.background);
@@ -55,6 +61,7 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
         Constants.screenWidth = screenWidth;
         Constants.density = getResources().getDisplayMetrics().density;
         setBehindContentView(R.layout.blank_right);
+
         slidingMenu = this.getSlidingMenu();
         slidingMenu.setMode(SlidingMenu.RIGHT);
         slidingMenu.setBehindWidth(dip2px(getApplicationContext(), 200));
@@ -64,24 +71,12 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
         settingContentFragment = new SettingContentFragment(slidingMenu);
         findMagazineContentFragment = new FindMagazineContentFragment(slidingMenu);
         findMagazineInfoContentFragment = new FindMagazineInfoContentFragment(slidingMenu);
-        findArticleContentFragment = new FindArticleContentFragment(slidingMenu);
-//        addAllFragment();
-//        clearFragment();
+        findArticleContentFragment = new FindArticleContentFragmentWeb(slidingMenu);
         changeLeftFragment(findContentFragment);
         MenuFragment rightMenuFragment = new MenuFragment();
         changeRightFragment(rightMenuFragment);
-
         initBackend();
 
-    }
-
-    public void addAllFragment() {
-        getFragmentManager()
-                .beginTransaction()
-                .add(R.id.blank_left, findContentFragment, "find")
-                .add(R.id.blank_left, collectContentFragment, "collect")
-                .add(R.id.blank_left, suggestContentFragment, "suggest")
-                .commit();
     }
 
     private void changeLeftFragment(ContentFragment fragment) {
@@ -119,7 +114,6 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
     }
 
     private void changeRightFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.blank_right, fragment);
         fragmentTransaction.commit();
     }
@@ -237,7 +231,7 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
     }
 
     public static void setArticleID(int magazineID, int postID) {
-        if (findArticleContentFragment.magazineID != magazineID || findArticleContentFragment.postID != postID) {
+        if (findArticleContentFragment.postID != postID) {
             findArticleContentFragment.setArticleID(magazineID, postID);
         }
     }
@@ -249,93 +243,149 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
             public void handleMessage( Message msg )
             {
                 Log.d( Constants.TAG, "msg" );
-				/*if( msg.what == Backend.BACKEND_MSG_GET_POST_LIST_COMPLETED )
+				/*if( msg.what == Backend.BACKEND_MSG_GETPOSTLIST_COMPLETED )
 				{
-					Log.d( Constants.TAG, "BACKEND_MSG_GET_POST_LIST_COMPLETED" );
-					Log.d( Constants.TAG, backend.posts.toString() );
+					Log.d( TAG, "BACKEND_MSG_GETPOSTLIST_COMPLETED" );
+					Log.d( TAG, backend.posts.toString() );
 					return;
 				}*/
                 if ( msg.what == Backend.BACKEND_MSG_GETPOSTCONTENT_COMPLETED )
                 {
-                    Log.d( Constants.TAG, "BACKEND_MSG_GET_POST_CONTENT_COMPLETED" );
-                    Log.d( Constants.TAG, backend.getPostByID(msg.arg1).postContent );
-//                    tv1.setText( "demoPost正文：\n"
-//                                    +demoPost.postContent
-//                    );
+					/*Log.d( TAG, "BACKEND_MSG_GETPOSTCONTENT_COMPLETED" );
+					Log.d( TAG, backend.getPostByID(msg.arg1).postContent );
+					tv1.setText( "demoPost正文：\n"
+							+demoPost.postContent
+							);*/
                     return;
                 }
                 if ( msg.what == Backend.BACKEND_MSG_GETPOSTMEDIA_COMPLETED )
                 {
-                    Log.d( Constants.TAG, "BACKEND_MSG_GET_POST_MEDIA_COMPLETED" );
+                    Log.d( Constants.TAG, "BACKEND_MSG_GETPOSTMEDIA_COMPLETED" );
                     return;
                 }
                 if ( msg.what == Backend.BACKEND_MSG_GETTERMS_COMPLETED )
                 {
-                    Log.d( Constants.TAG, "BACKEND_MSG_GET_TERMS_COMPLETED" );
+                    Log.d( Constants.TAG, "BACKEND_MSG_GETTERMS_COMPLETED" );
                     Log.d( Constants.TAG, backend.presses.toString() );
                     Log.d( Constants.TAG, backend.magazineIDsOrderByTime.toString() );
+//                    latestMagazine = backend.getMagazineByID( backend.magazineIDsOrderByTime.get(0) );
+//                    Log.d( Constants.TAG, latestMagazine.toString() );
+                    backend.getMagazinesIDByHot(0, 10, hotIDs);
                     addMagazines();
-
                     //现在取回最新的magazine的文章列表
-                    //这步可以拿出来写到一个Button上，但必须保证按这个Button前上面的函数完成了，，为了方便我就不写到Button里了
+                    //这步可以拿出来写到一个Button上，但必须保证按这个Button前收到这个消息了。
+                    //因为逻辑上如果没收到这个消息，下面这个函数的参数根本就不知道
                     //这个函数现在好像出问题了，以前用的好好的，不知道为什么刚刚我测试的时候它提示服务器那边的API没了，我正在问DS
-//                    backend.getPostsByMagazineID( latestMagazine.term_id, 10 );
+                    //backend.getPostsByMagazineID( latestMagazine.term_id, 10 );
                     return;
                 }
                 if ( msg.what == Backend.BACKEND_MSG_GETPOSTSBYMAGAZINEID_COMPLETED )
                 {
-                    Log.d( Constants.TAG, "BACKEND_MSG_GET_POSTS_BY_MAGAZINE_ID_COMPLETED" );
-                    Magazine m = backend.getMagazineByID( 6 );
-                    Log.d( Constants.TAG, m.posts.toString() );
-//                    tv1.setText("latestMagazine.posts现在可用" );
-                    if ( latestMagazine.count == 0 )
-                    {
-//                        tv2.setText( "最新的杂志里面目前没有文章……");
-                        //这种情况其实不应该出现，但目前测试的网站里面最新的杂志里确实没有文章。。
-                    }
-                    else {
-                        //最新的杂志里面的文章
-//                        tv2.setText( latestMagazine.posts.toString() );
+                    Log.d( Constants.TAG, "BACKEND_MSG_GETPOSTSBYMAGAZINEID_COMPLETED" );
+//                    Magazine m = latestMagazine;
+//                    Log.d( Constants.TAG, m.posts.toString() );
+//                    if ( latestMagazine.count == 0 )
+//                    {
+//                        这种情况其实不应该出现，但目前测试的网站里面最新的杂志里确实没有文章。。
+//                    }
+//                    else {
+//                        最新的杂志里面的文章
+//
+//                        取回最新的杂志的第一篇文章的信息
+//                        demoPost = latestMagazine.posts.get(0);
+//                        Log.d( Constants.TAG, demoPost.toString() );
 
-                        //取回最新的杂志的第一篇文章的信息
-                        demoPost = latestMagazine.posts.get(0);
-//                        tv1.setText( demoPost.postTitle );
-
-                        //取回demoPost的正文
-                        //这步也可以拿到一个Button里……
-                        backend.getPostContent( demoPost.postID );
-                    }
+//                        取回demoPost的正文
+//                        这步也可以拿到一个Button里……
+//                        backend.getPostContent( demoPost.postID );
+//                    }
                     return;
                 }
                 if ( msg.what == Backend.BACKEND_MSG_GETMAGAZINECOVER_COMPLETED )
                 {
-                    Log.d( Constants.TAG, "BACKEND_MSG_GET_MAGAZINE_COVER_COMPLETED" );
+                    Log.d( Constants.TAG, "BACKEND_MSG_GETMAGAZINECOVER_COMPLETED" );
                     Log.d( Constants.TAG, String.valueOf(msg.arg1) );
                 }
-                if ( msg.what == Backend.BACKEND_MSG_RETRIVEMARKEDPOST_COMPLETED )
+                if ( msg.what == Backend.BACKEND_MSG_ADDPOSTTOMAGAZINE_COMPLETED )
                 {
-                    Log.d( Constants.TAG, "BACKEND_MSG_GET_MAGAZINE_COVER_COMPLETED" );
+                    Log.d( Constants.TAG, "BACKEND_MSG_GETMAGAZINECOVER_COMPLETED" );
                     Log.d( Constants.TAG, String.valueOf(msg.arg1) );
-                    Log.d(Constants.TAG, backend.getPostByID(msg.arg1).toString());
-                    //Log.d( Constants.TAG, backend.getMagazineByID(6).posts.toString() );
+                    Log.d( Constants.TAG, backend.getPostByID(msg.arg1).toString() );
+                    //Log.d( TAG, backend.getMagazineByID(6).posts.toString() );
+
+                }
+                if ( msg.what == Backend.BACKEND_MSG_GETMAGAZINESIDBYHOT_COMPLETED )
+                {
+                    Log.d( Constants.TAG, "BACKEND_MSG_GETMAGAZINESIDBYHOT_COMPLETED" );
+                    Log.d( Constants.TAG, "hottest " + hotIDs.toString() );
+                    hotIDs.remove(3);
+                    for (int i = 0;i < hotIDs.size(); i += 2) {
+                        if (i + 1 < hotIDs.size()) {
+                            findContentFragment.addHottestMagazine(backend.getMagazineByID(hotIDs.get(i)),
+                                    backend.getMagazineByID(hotIDs.get(i + 1)));
+                        }
+                        else {
+                            findContentFragment.addHottestMagazine(backend.getMagazineByID(hotIDs.get(i)));
+                        }
+                    }
+                }
+                if ( msg.what == Backend.BACKEND_MSG_GETSLIDER_COMPLETED )
+                {
+                    Log.d( Constants.TAG, "BACKEND_MSG_GETSLIDER_COMPLETED" );
+                    backend.getSliderPicture(0);
+                    findContentFragment.initNewestSlide();
+                }
+                if ( msg.what == Backend.BACKEND_MSG_GETSLIDERPICTURE_COMPLETED )
+                {
+                    Log.d( Constants.TAG, "BACKEND_MSG_GETSLIDERPICTURE_COMPLETED" );
+                }
+                if ( msg.what == Backend.BACKEND_MSG_GETBOOKMARKS_COMPLETED )
+                {
+                    Log.d( Constants.TAG, "BACKEND_MSG_GETBOOKMARKS_COMPLETED" );
+                    Log.d( Constants.TAG, backend.bookmarks.toString() );
+
+                }
+                if ( msg.what == Backend.BACKEND_MSG_QUERYBOOKMARKSTATUS_COMPLETED )
+                {
+                    Log.d( Constants.TAG, "BACKEND_MSG_QUERYBOOKMARKSTATUS_COMPLETED" );
+                    Log.d( Constants.TAG, String.valueOf(msg.arg1) );
+                    Log.d( Constants.TAG, String.valueOf(msg.arg2) );
+
                 }
             }
 
         };
         backend = new Backend(backendHandler);
         backend.getTerms();
+        backend.getSlider();
     }
 
     void addMagazines() {
         ArrayList<Integer> IDs = backend.magazineIDsOrderByTime;
         for (int i = 0;i < IDs.size(); i += 2) {
             if (i + 1 < IDs.size()) {
-                findContentFragment.addHottestMagazine(backend.getMagazineByID(IDs.get(i)),
+                findContentFragment.addNewestMagazine(backend.getMagazineByID(IDs.get(i)),
                         backend.getMagazineByID(IDs.get(i + 1)));
             }
             else {
-                findContentFragment.addHottestMagazine(backend.getMagazineByID(IDs.get(i)));
+                findContentFragment.addNewestMagazine(backend.getMagazineByID(IDs.get(i)));
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        backendHandler = null;
+        Trash.recycle();
+        try {
+            fragmentTransaction.remove(findContentFragment);
+            fragmentTransaction.remove(collectContentFragment);
+            fragmentTransaction.remove(suggestContentFragment);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        fragmentNum = 0;
+        super.onStop();
     }
 }

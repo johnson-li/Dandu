@@ -28,4 +28,7 @@
     <color name="no_collection">#aaaaaa</color>
     <color name="to_find_normal">#4b4b4b</color>
     <color name="to_find_pressed">#717171</color>
+    <color name="app_cover">#252525</color>
+    <color name="cache_background">#eaeaea</color>
+    <color name="refresh_head_background">#c5c5c5</color>
 </resources>

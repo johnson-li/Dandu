@@ -6,7 +6,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.dandu.constant.Constants;
+import com.dandu.activity.MainActivity;
+import com.dandu.contentfragment.FindContentFragment;
 import com.dandu.contentfragment.FindMagazineContentFragment;
 
 import java.io.*;
@@ -15,6 +16,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
+
 
 public class Backend
 {
@@ -28,17 +30,28 @@ public class Backend
 	static public final int BACKEND_MSG_GETBOOKMARKS_COMPLETED = 7;
 	static public final int BACKEND_MSG_CHANGEBOOKMARK_COMPLETED = 8;
 	static public final int BACKEND_MSG_QUERYBOOKMARKSTATUS_COMPLETED = 9;
-	static public final int BACKEND_MSG_RETRIVEMARKEDPOST_COMPLETED = 10;
+	static public final int BACKEND_MSG_ADDPOSTTOMAGAZINE_COMPLETED = 10;
+	static public final int BACKEND_MSG_GETMAGAZINESIDBYHOT_COMPLETED = 11;
+	static public final int BACKEND_MSG_GETSLIDER_COMPLETED = 12;
+	static public final int BACKEND_MSG_GETSLIDERPICTURE_COMPLETED = 13;
 	
 	//储存媒体的数组
 	public ArrayList<Press> presses = new ArrayList<Press>();
 	
 	//记录是否登录，在使用收藏有关的函数时，请先检查此变量值
 	public Boolean isLogined = false;
+	//储存用户的账号和密码
+	public String username="";
+	public String password="";
 	
 	//所有期刊的ID，ID已经按降序排列，ID越大，表示这个期刊越新
 	//此数组在调用getTerms之后才有效
 	public ArrayList<Integer> magazineIDsOrderByTime = new ArrayList<Integer>();
+	
+	//储存slider
+	//此数组在调用getSlider之后才有效
+	public ArrayList<Slider> slider = new ArrayList<Slider>();
+	
 	
 	//保存书签（收藏）的数组，每个书签用一个整数（bookmarkID）来表示
 	//当书签代表一篇文章时，bookmarkID = postID
@@ -50,9 +63,43 @@ public class Backend
 	public Backend( Handler backendHandler_ )
 	{
 		Log.d( TAG, "Backend()" );
-		uri = URI.create( "http://www.illusate.com/ddtest/xmlrpc.php" );
+		uri = URI.create( "http://stu.fudan.edu.cn/dandu/xmlrpc.php" );
 		backendHandler = backendHandler_;
 		
+	}
+	
+	//按热度返回杂志ID，ID被add到参数magazineIDsOrderByHot中
+	//从第offset热的杂志开始依次取回nums个杂志
+	//因为这个函数有offset和nums两个参数，后台部分来维护magazineIDsOrderByHot这个数组比较麻烦，
+	//因此后台就不维护它了T^T
+	//成功之后发送消息
+	//msg.what = BACKEND_MSG_GETMAGAZINESIDBYHOT_COMPLETED;
+	//msg.arg1 = offset;
+	//msg.arg2 = nums;
+	public void getMagazinesIDByHot( int offset_, int nums_, ArrayList<Integer> magazineIDsOrderByHot_ )
+	{
+		GetMagazinesIDByHotRunnable getMagazinesIDByHot = new GetMagazinesIDByHotRunnable( offset_, nums_, magazineIDsOrderByHot_ );
+		new Thread(getMagazinesIDByHot).start();
+		return;
+	}
+	
+	//取得所有Slider，结果存在slider这个数组中
+	//成功之后发送消息
+	//BACKEND_MSG_GETSLIDER_COMPLETED
+	public void getSlider()
+	{
+		GetSliderRunnable getSlider = new GetSliderRunnable();
+		new Thread(getSlider).start();
+		return;
+	}
+	
+	//下载并缓存某个slider的图片，index要下载的slider在slider数组中的序号
+	//下载的图片存放在 /sdcard/FDUReader/slider/内，文件名称与url中的文件名称一致
+	public void getSliderPicture( int index )
+	{
+		GetSliderPictureRunnable getSliderPicture = new GetSliderPictureRunnable(index);
+		new Thread(getSliderPicture).start();
+		return;
 	}
 	
 	//取得某个magazine的所有的文章，
@@ -99,7 +146,7 @@ public class Backend
 	public void getTerms()
 	{
 		GetTermsRunnable getTerm = new GetTermsRunnable();
-		new Thread(getTerm).start();
+		new Thread( getTerm).start();
 		return;
 	}
 	
@@ -194,38 +241,37 @@ public class Backend
 		return;
 	}
 	
-	//取回一篇文章，通过书签号
+	//取回一篇文章，通过文章ID
+	//！！！
+	//此函数应该在下面两种情况下被调用：
+	//1.文章ID是通过书签拿到的
 	//如果书签号是负数，代表一个期刊，直接调用getMagazineByID即可取回该期刊
-	//如果书签号是正数，代表一个文章，此时需要先调用retriveMarkedPost函数，
-	//调用成功后再调用getPostByID才能取回该文章
+	//如果书签号是正数，代表一个文章，此时需要先调用此函数
+	//2.文章ID是通过slider拿到的
+	//在以上两种情况下，要先调用此函数，调用成功后再调用getPostByID才能保证正确取回该文章
+	//！！！
 	//完成后发送BACKEND_MSG_RETRIVEMARKEDPOST_COMPLETED消息
 	//msg.arg1 = postID
-	public void retriveMarkedPost( Integer bookmarkID )
+	public void addPostToMagazine( Integer bookmarkID )
 	{
-		RetriveMarkedPostRunnable retriveMarkedPost = new RetriveMarkedPostRunnable(bookmarkID);
-		new Thread(retriveMarkedPost).start();
+		AddPostToMagazineRunnable addPostToMagazine = new AddPostToMagazineRunnable(bookmarkID);
+		new Thread(addPostToMagazine).start();
 		return;
 	}
 	
 	static private final String TAG = "BackendDebugging";
-	static private final String BLOG_USERNAME = "dandu";
+	static private final String BLOG_USERNAME = "reader";
 	static private final String BLOG_PASSWORD = "dandu";
 	static private final String WPAPI_GETPOST = "wp.getPost";
 	static private final int BLOG_ID = 1;
 	static private final String WPAPI_POST_CONTENT = "post_content";
 	static private final String WPAPI_GETTERMS = "wp.getTerms";
 	
-	private String username;
-	private String password;
-	
 
 	private Handler backendHandler;
 	private URI uri;
 
-	
-
-	
-	
+		
 	private class GetPostContentRunnable implements Runnable
 	{
 		private Integer post_id;
@@ -376,7 +422,6 @@ public class Backend
 		}
 	}
 	
-
 	private class GetTermsRunnable implements Runnable
 	{
 
@@ -398,7 +443,7 @@ public class Backend
 					Map< String, Object > curTermMap = (Map<String, Object>)curTermObject;
 					Term curTerm = new Term();
 					curTerm.term_taxonomy_id = (String)curTermMap.get( "term_taxonomy_id" );
-					curTerm.term_id = Integer.valueOf((String)curTermMap.get( "term_id" ));
+					curTerm.term_id = Integer.valueOf( (String)curTermMap.get( "term_id" ));
 					curTerm.count = (Integer)curTermMap.get( "count" );
 					curTerm.description = (String)curTermMap.get( "description" );
 					curTerm.name = (String)curTermMap.get( "name" );
@@ -435,7 +480,8 @@ public class Backend
 				Message msg = new Message();
 				msg.what = BACKEND_MSG_GETTERMS_COMPLETED;
 				backendHandler.sendMessage(msg);
-				Log.d( TAG, "GetTermsRunnable() return" );
+                Log.d("johnson", "refreshed == true");
+                Log.d( TAG, "GetTermsRunnable() return" );
 			} catch (XMLRPCException e)
 			{
 				e.printStackTrace();
@@ -446,6 +492,78 @@ public class Backend
 		
 	}
 		
+	private class GetMagazinesIDByHotRunnable implements Runnable
+	{
+		private int offset;
+		private int nums;
+		private ArrayList<Integer> magazineIDsOrderByHot;
+		public GetMagazinesIDByHotRunnable( int offset_, int nums_, ArrayList<Integer> magazineIDsOrderByHot_ )
+		{
+			offset = offset_;
+			nums = nums_;
+			magazineIDsOrderByHot = magazineIDsOrderByHot_;
+		}
+		@Override
+		public void run()
+		{
+			Log.d( TAG, "GetMagazinesIDByHotRunnable.run()" );
+			Object[] params = { BLOG_ID, BLOG_USERNAME, BLOG_PASSWORD, offset, nums };
+			XMLRPCClient client = new XMLRPCClient(uri);
+			try
+			{
+				Object idsObject = client.callEx( "dandu.getHot", params );
+				Object[] idsObjects = (Object[])idsObject;
+				for( Object id : idsObjects )
+				{
+					magazineIDsOrderByHot.add( Integer.valueOf((String)id) ); 
+				}
+				Message msg = new Message();
+				msg.what = BACKEND_MSG_GETMAGAZINESIDBYHOT_COMPLETED;
+				msg.arg1 = offset;
+				msg.arg2 = nums;
+				backendHandler.sendMessage(msg);
+				Log.d( TAG, "GetMagazinesIDByHotRunnable.run() return" );
+				
+			} catch (XMLRPCException e)
+			{
+				e.printStackTrace();
+				Log.d( TAG, "GetMagazinesIDByHotRunnable.run()"+e.toString() );
+			}
+		}
+		
+	}
+	private class GetSliderRunnable implements Runnable
+	{
+
+		@Override
+		public void run()
+		{
+			Log.d( TAG, "GetSliderRunnable.run()" );
+			Object[] params = { };
+			XMLRPCClient client = new XMLRPCClient(uri);
+			try
+			{
+				Object slidersObject = client.callEx( "dandu.getSlider", params );
+				Object[] slidersObjects = (Object[])slidersObject;
+				for( Object s : slidersObjects )
+				{
+					Object[] curSlider = (Object[])s;
+					slider.add( new Slider( (String)curSlider[0], (Integer)curSlider[1]) );
+				}
+				Message msg = new Message();
+				msg.what = BACKEND_MSG_GETSLIDER_COMPLETED;
+				backendHandler.sendMessage(msg);
+				Log.d( TAG, "GetSliderRunnable.run() return" );
+				
+			} catch (XMLRPCException e)
+			{
+				e.printStackTrace();
+				Log.d( TAG, "GetSliderRunnable.run()"+e.toString() );
+			}
+		}
+		
+	}
+	
 	private class GetPostMediaRunnable implements Runnable
 	{
 		private Post curPost;
@@ -566,10 +684,12 @@ public class Backend
 		{
 			Magazine m = getMagazineByID(magazine_id);
 			String url = m.coverImage;
+            if (url == null) {
+                return;
+            }
 			Log.d( TAG, url );
 			Log.d(TAG, "GetMagazineCoverRunnable.run()" );
-			File SDFile = android.os.Environment  
-	                .getExternalStorageDirectory();  
+			File SDFile = android.os.Environment.getExternalStorageDirectory();
 	        
 	    	File FDUReaderDir = new File( SDFile+File.separator+"FDUReader" );
 	    	File magazinesDir = new File( SDFile+File.separator+"FDUReader"+File.separator+"magazines" );
@@ -703,9 +823,8 @@ public class Backend
 				}
 				Message msg = new Message();
 				msg.what = BACKEND_MSG_GETPOSTSBYMAGAZINEID_COMPLETED;
-				backendHandler.sendMessage(msg);
+//				backendHandler.sendMessage(msg);
                 FindMagazineContentFragment.articleListHandler.sendMessage(msg);
-                Log.d( TAG, "get " + m.posts.size() + " posts");
 				Log.d( TAG, "GetPostsByMagazineIDRunnable() return" );
 				return;		
 				
@@ -717,6 +836,100 @@ public class Backend
 		}
 		
 	}
+	private class GetSliderPictureRunnable implements Runnable
+	{
+		private int index;
+		public GetSliderPictureRunnable( int index_ )
+		{
+			index = index_ ;
+		}
+		@Override
+		public void run()
+		{
+			String url = slider.get(index).url;
+			Log.d( TAG, url );
+			Log.d(TAG, "GetSliderPictureRunnable.run()" );
+			File SDFile = android.os.Environment  
+	                .getExternalStorageDirectory();  
+	        
+	    	File FDUReaderDir = new File( SDFile+File.separator+"FDUReader" );
+	    	File sliderDir = new File( SDFile+File.separator+"FDUReader"+File.separator+"slider" );
+	    	
+	    	if ( !FDUReaderDir.exists() )
+			{
+				FDUReaderDir.mkdir();
+			}
+	    	
+	    	if ( !sliderDir.exists() )
+			{
+	    		sliderDir.mkdir();
+			}
+	    	
+	   		String fileName = url.substring(url.lastIndexOf("/") + 1);
+	   		File mediaFile = new File( sliderDir.getAbsolutePath() + File.separator + fileName );
+	   		if ( mediaFile.exists() )
+			{
+				Message msg = new Message();
+				msg.what = BACKEND_MSG_GETSLIDERPICTURE_COMPLETED;
+				msg.arg1 = index;
+				backendHandler.sendMessage(msg);
+				Log.d( TAG, "mediaExist" );
+				return;				
+			}
+	   		
+	   		/*if ( url.endsWith( ".jpg" ) ) 
+			{
+				int p = url.indexOf( ".jpg" );
+				StringBuffer buf = new StringBuffer( url );
+				buf.insert( p, "-150x150" );
+				url = buf.toString();
+			}*/
+			
+			try
+			{
+				URL Url;
+				Url = new URL(url);
+				URLConnection conn = Url.openConnection();
+				conn.connect();
+				InputStream is = conn.getInputStream();
+				int fileSize = conn.getContentLength();
+				if ( fileSize <= 0 ) {
+					throw new RuntimeException("无法获知文件大小 ");
+				}
+				if (is == null) {
+					throw new RuntimeException("无法获取文件");
+				}
+				@SuppressWarnings("resource")
+				FileOutputStream FOS = new FileOutputStream( sliderDir.getAbsolutePath()+
+						File.separator+fileName);
+				byte buf[] = new byte[1024];
+				@SuppressWarnings("unused")
+				int downLoadFilePosition = 0;
+				int numRead;
+				while ((numRead = is.read(buf)) != -1) {
+					FOS.write(buf, 0, numRead);
+					downLoadFilePosition += numRead;
+					}
+				is.close();
+				
+				Message msg = new Message();
+				msg.what = BACKEND_MSG_GETSLIDERPICTURE_COMPLETED;
+				msg.arg1 = index;
+				backendHandler.sendMessage(msg);
+			Log.d( TAG, "GetSliderPictureRunnable.run() return" );
+			} catch (MalformedURLException e)
+			{
+				e.printStackTrace();
+				Log.d(TAG, "GetSliderPictureRunnable.run()Failed "+e.toString() );
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+				Log.d(TAG, "GetSliderPictureRunnable.run()Failed "+e.toString() );
+			}
+		}
+		
+	}
+	
 	
 	private class GetBookmarksRunnbale implements Runnable
 	{
@@ -738,7 +951,7 @@ public class Backend
 				Object[] bookmarksObjects = (Object[])bookmarksObject;
 				for( Object curBookmark : bookmarksObjects )
 				{
-					bookmarks.add( (Integer)curBookmark );
+					bookmarks.add( Integer.valueOf((String)(curBookmark.toString())) );
 				}				
 				Message msg = new Message();
 				msg.what = BACKEND_MSG_GETBOOKMARKS_COMPLETED;
@@ -836,24 +1049,24 @@ public class Backend
 			}
 		}
 	}
-	private class RetriveMarkedPostRunnable implements Runnable
+	private class AddPostToMagazineRunnable implements Runnable
 	{
 		private Integer postID;
-		public RetriveMarkedPostRunnable( Integer bookmarkID_ )
+		public AddPostToMagazineRunnable( Integer postID_ )
 		{
-			postID = bookmarkID_;
+			postID = postID_;
 		}
 		@Override
 		public void run()
 		{
-			Log.d( TAG, "RetriveMarkedPostRunnable.run()");
+			Log.d( TAG, "AddPostToMagazineRunnable.run()");
 			if ( getPostByID(postID) != null )
 			{
 				Message msg = new Message();
-				msg.what = BACKEND_MSG_RETRIVEMARKEDPOST_COMPLETED;
+				msg.what = BACKEND_MSG_ADDPOSTTOMAGAZINE_COMPLETED;
 				msg.arg1 = postID;
 				backendHandler.sendMessage(msg);
-				Log.d( TAG, "RetriveMarkedPostRunnable.run() return");
+				Log.d( TAG, "AddPostToMagazineRunnable.run() return");
 				return;
 			}
 			XMLRPCClient client = new XMLRPCClient(uri);
@@ -872,6 +1085,7 @@ public class Backend
 				curPost.postExcerpt = (String)postMap.get( "post_excerpt" );
 				curPost.postModifiedDate = (Date)postMap.get( "post_modified");
 				curPost.postAuthor = (String)postMap.get( "post_author" );
+				curPost.postLink = (String)postMap.get( "link" );
 				Object[] termsObjects = (Object[])postMap.get( "terms" );
 				for ( Object curTermObject : termsObjects ){
 					@SuppressWarnings("unchecked")
@@ -886,16 +1100,16 @@ public class Backend
 					}
 				}
 				Message msg = new Message();
-				msg.what = BACKEND_MSG_RETRIVEMARKEDPOST_COMPLETED;
+				msg.what = BACKEND_MSG_ADDPOSTTOMAGAZINE_COMPLETED;
 				msg.arg1 = postID;
 				backendHandler.sendMessage(msg);
-				Log.d( TAG, "RetriveMarkedPostRunnable.run() return" );
+				Log.d( TAG, "AddPostToMagazineRunnable.run() return" );
 				return;		
 				
 			} catch (XMLRPCException e)
 			{
 				e.printStackTrace();
-				Log.d( TAG, "RetriveMarkedPostRunnable.run()FAILED:"+e.toString() );
+				Log.d( TAG, "AddPostToMagazineRunnable.run()FAILED:"+e.toString() );
 			}
 			
 		

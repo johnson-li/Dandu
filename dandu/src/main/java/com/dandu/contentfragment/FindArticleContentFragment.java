@@ -1,8 +1,12 @@
 package com.dandu.contentfragment;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 
 import com.dandu.activity.MainActivity;
@@ -39,13 +43,22 @@ public class FindArticleContentFragment extends ContentFragment{
                 backward();
             }
         });
+        Button share = (Button)view.findViewById(R.id.share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();
+                dialog.show();
+                Window window = dialog.getWindow();
+                window.setContentView(R.layout.share_dialog);
+            }
+        });
         return view;
     }
 
     public void setArticleID(int magazineID, int postID) {
         //postID == 0 means that it's debugging and there is no need to do anything with backend
         if (postID == 0) {
-
             return;
         }
         this.postID = postID;
