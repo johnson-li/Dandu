@@ -22,7 +22,12 @@ public class ArticleOnClickListener implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         ContentFragment.isFindInArticle = true;
+//        if (postID != MainActivity.findArticleContentFragment.oldPostID) {
+//            MainActivity.findArticleContentFragment.clearPage();
+//        }
+        MainActivity.findArticleContentFragment.setArticleID(magazineID, postID);
+        MainActivity.findArticleContentFragment.magazineID = magazineID;
+        MainActivity.findArticleContentFragment.postID = postID;
         MenuFragment.changeFragment(ContentFragment.FIND_ARTICLE);
-        MainActivity.setArticleID(magazineID, postID);
     }
 }

@@ -19,6 +19,7 @@ public class HottestMagazineOnClickListener implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+        MainActivity.findMagazineContentFragment.clear();
         MainActivity.backend.getPostsByMagazineID(magazineID, 10);
         ContentFragment.isFindInMagazine = true;
         MenuFragment.changeFragment(ContentFragment.FIND_MAGAZINE);

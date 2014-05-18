@@ -90,8 +90,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom"
-        android:layout_below="@id/top" >
+        android:layout_below="@id/top" />
 
-        </WebView>
+    <RelativeLayout
+        android:id="@+id/loading"
+        android:background="@color/refresh_head_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom"
+        android:layout_below="@id/top">
+        <ImageView
+            android:visibility="invisible"
+            android:id="@+id/loadingImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_launcher"
+            />
+        <TextView
+            android:id="@+id/loadingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Loading..."
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="0 %"
+            android:layout_below="@id/loadingText"
+            android:textSize="20sp"
+            android:textColor="@color/white"/>
+        </RelativeLayout>
 </RelativeLayout>
 

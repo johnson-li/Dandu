@@ -1,14 +1,24 @@
 package com.dandu.menu;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.dandu.activity.ImageActivity;
+import com.dandu.activity.LoginActivity;
+import com.dandu.constant.Constants;
 import com.dandu.contentfragment.ContentFragment;
 import com.fudan.dandu.dandu.dandu.R;
 
@@ -17,7 +27,7 @@ import com.fudan.dandu.dandu.dandu.R;
  */
 public class MenuFragment extends Fragment{
     static OnHeadlineSelectedListener mCallback;
-
+    View view;
     public interface OnHeadlineSelectedListener {
         public void onFragmentChanged(int fragmentNum);
     }
@@ -30,7 +40,11 @@ public class MenuFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.menu_frame, null);
+        view = inflater.inflate(R.layout.menu_frame, null);
+        TextView userName = (TextView)view.findViewById(R.id.userName);
+        if (Constants.userName != null && !Constants.userName.equals("")) {
+            userName.setText(Constants.userName);
+        }
         Button find = (Button)view.findViewById(R.id.find);
         Button collect = (Button)view.findViewById(R.id.collect);
         Button suggest = (Button)view.findViewById(R.id.suggest);
@@ -39,7 +53,8 @@ public class MenuFragment extends Fragment{
         head.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
             }
         });
         find.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +94,6 @@ public class MenuFragment extends Fragment{
         night.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
             }
         });
         return view;
@@ -94,6 +108,10 @@ public class MenuFragment extends Fragment{
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateUserName() {
+        ((TextView)view.findViewById(R.id.userName)).setText(Constants.userName);
     }
 
     public static void changeFragment(int fragment) {

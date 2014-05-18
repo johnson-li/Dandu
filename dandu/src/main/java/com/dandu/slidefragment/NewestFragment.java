@@ -13,17 +13,22 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.dandu.activity.MainActivity;
 import com.dandu.constant.Constants;
 import com.dandu.contentfragment.ContentFragment;
+import com.dandu.fdureader.Backend;
 import com.dandu.fdureader.Magazine;
-import com.dandu.fdureader.Post;
 import com.dandu.listener.HottestMagazineOnClickListener;
 import com.dandu.menu.MenuFragment;
 import com.fudan.dandu.dandu.dandu.R;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
+
+import org.xmlrpc.android.XMLRPCClient;
+import org.xmlrpc.android.XMLRPCException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,7 +42,6 @@ import java.util.List;
  * Created by johnson on 3/22/14.
  */
 public class NewestFragment extends android.app.Fragment {
-
     List<String> stringList;
     List<LinearLayout> magazineLayoutList;
     static DisplayMetrics displayMetrics;
@@ -46,6 +50,7 @@ public class NewestFragment extends android.app.Fragment {
     PullToRefreshScrollView mPullRefreshScrollView;
     ViewPager viewPager;
     View.OnClickListener onClickListener;
+    ScrollView mScrollView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,20 +81,55 @@ public class NewestFragment extends android.app.Fragment {
             @Override
             public void onClick(View v) {
                 final int postID = MainActivity.backend.slider.get(viewPager.getCurrentItem()).postid;
-
-//                ContentFragment.isFindInArticle = true;
-//                MenuFragment.changeFragment(ContentFragment.FIND_ARTICLE);
-//                MainActivity.setArticleID(0, postID);
+                ContentFragment.isFindInArticle = true;
+                MainActivity.findArticleContentFragment.postID = postID;
+                MainActivity.findArticleContentFragment.magazineID = 0;
+                MenuFragment.changeFragment(ContentFragment.FIND_ARTICLE);
+//                if (postID != MainActivity.findArticleContentFragment.oldPostID) {
+//                    MainActivity.findArticleContentFragment.clearPage();
+//                }
+//                MainActivity.findArticleContentFragment.setArticleID(0, postID);
             }
         };
         int height = imageHeight * displayMetrics.widthPixels / imageWidth;
         final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(displayMetrics.widthPixels, height + 1);
         viewPager.setLayoutParams(layoutParams);
         scrollViewLayout = (LinearLayout)view.findViewById(R.id.scrollViewLayout);
+        mPullRefreshScrollView = (PullToRefreshScrollView) view.findViewById(R.id.newestScrollView);
+        mPullRefreshScrollView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ScrollView>() {
+
+            @Override
+            public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+                new GetDataTask().execute();
+            }
+        });
+        mScrollView = mPullRefreshScrollView.getRefreshableView();
+        new AsyncTask<String, String, String>() {
+            @Override
+            protected String doInBackground(String... params) {
+                while (MainActivity.backend.magazineIDsOrderByTime.isEmpty()) {
+                    try {
+                        Thread.sleep(500);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                initMagazines();
+            }
+        }.execute();
         return view;
     }
 
-    public void addMagazine(Magazine magazine1, Magazine magazine2) {
+    public void addMagazine(final Magazine magazine1, final Magazine magazine2) {
+        if (magazine1 == null || magazine2 == null) {
+            return;
+        }
         View view;
         try {
             view = getActivity().getLayoutInflater().inflate(R.layout.magazine, null);
@@ -103,17 +143,117 @@ public class NewestFragment extends android.app.Fragment {
         m1.setText(magazine1.description);
         t1.getPaint().setFakeBoldText(true);
         t1.setText(magazine1.name);
-        ImageView i1 = (ImageView)view.findViewById(R.id.magazineCover1);
+        final ImageView i1 = (ImageView)view.findViewById(R.id.magazineCover1);
         i1.setImageResource(R.drawable.magazine_loading);
+        final String src1 = Constants.MAGAZINE_COVER_PATH + File.separator + magazine1.coverImage.substring(magazine1.coverImage.lastIndexOf("/") + 1);
+        final File image1 = new File(src1);
+        new AsyncTask<String, String, String>() {
+            @Override
+            protected String doInBackground(String... params) {
+                if (image1.exists()) {
+                    Log.d("johnson", "magazine cover exists " + src1);
+                    return null;
+                }
+                Log.d(Constants.TAG, magazine1.coverImage );
+                Log.d(Constants.TAG, "GetMagazineCoverRunnable.run()" );
+                try {
+                    URL Url;
+                    Url = new URL(magazine1.coverImage);
+                    URLConnection conn = Url.openConnection();
+                    conn.connect();
+                    InputStream is = conn.getInputStream();
+                    int fileSize = conn.getContentLength();
+                    if ( fileSize <= 0 ) {
+                        throw new RuntimeException("无法获知文件大小 ");
+                    }
+                    if (is == null) {
+                        throw new RuntimeException("无法获取文件");
+                    }
+                    @SuppressWarnings("resource")
+                    FileOutputStream FOS = new FileOutputStream(src1);
+                    byte buf[] = new byte[1024];
+                    @SuppressWarnings("unused")
+                    int downLoadFilePosition = 0;
+                    int numRead;
+                    while ((numRead = is.read(buf)) != -1) {
+                        FOS.write(buf, 0, numRead);
+                        downLoadFilePosition += numRead;
+                    }
+                    is.close();
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                if (magazine1.coverImage != null && !magazine1.coverImage.equals("")) {
+                    Log.d("johnson", src1);
+                    i1.setImageBitmap(BitmapFactory.decodeFile(src1));
+                    i1.setLayoutParams(new LinearLayout.LayoutParams(Constants.getMagazineCoverWidth(), Constants.getMagazineCoverHeight(src1)));
+                }
+            }
+        }.execute();
 
         TextView t2 = (TextView)view.findViewById(R.id.articleTitle2);
         TextView m2 = (TextView)view.findViewById(R.id.magazineInfo2);
         t2.setText(magazine2.name);
         t2.getPaint().setFakeBoldText(true);
         m2.setText(magazine2.description);
-        ImageView i2 = (ImageView)view.findViewById(R.id.magazineCover2);
+        final ImageView i2 = (ImageView)view.findViewById(R.id.magazineCover2);
         i2.setImageResource(R.drawable.magazine_loading);
+        final String src2 = Constants.MAGAZINE_COVER_PATH + File.separator + magazine2.coverImage.substring(magazine2.coverImage.lastIndexOf("/") + 1);
+        final File image2 = new File(src2);
+        new AsyncTask<String, String, String>() {
+            @Override
+            protected String doInBackground(String... params) {
+                if (image2.exists()) {
+                    Log.d("johnson", "magazine cover exists " + src1);
+                    return null;
+                }
+                Log.d(Constants.TAG, magazine2.coverImage );
+                Log.d(Constants.TAG, "GetMagazineCoverRunnable.run()" );
+                try {
+                    URL Url;
+                    Url = new URL(magazine2.coverImage);
+                    URLConnection conn = Url.openConnection();
+                    conn.connect();
+                    InputStream is = conn.getInputStream();
+                    int fileSize = conn.getContentLength();
+                    if ( fileSize <= 0 ) {
+                        throw new RuntimeException("无法获知文件大小 ");
+                    }
+                    if (is == null) {
+                        throw new RuntimeException("无法获取文件");
+                    }
+                    @SuppressWarnings("resource")
+                    FileOutputStream FOS = new FileOutputStream(src2);
+                    byte buf[] = new byte[1024];
+                    @SuppressWarnings("unused")
+                    int downLoadFilePosition = 0;
+                    int numRead;
+                    while ((numRead = is.read(buf)) != -1) {
+                        FOS.write(buf, 0, numRead);
+                        downLoadFilePosition += numRead;
+                    }
+                    is.close();
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                return null;
+            }
 
+            @Override
+            protected void onPostExecute(String s) {
+                if (magazine2.coverImage != null && !magazine2.coverImage.equals("")) {
+                    i2.setImageBitmap(BitmapFactory.decodeFile(src2));
+                    i2.setLayoutParams(new LinearLayout.LayoutParams(Constants.getMagazineCoverWidth(), Constants.getMagazineCoverHeight(src2)));
+                }
+            }
+        }.execute();
         LinearLayout linearLayout1 = (LinearLayout)view.findViewById(R.id.magazineLinearLayout1);
         LinearLayout linearLayout2 = (LinearLayout)view.findViewById(R.id.magazineLinearLayout2);
         linearLayout1.setOnClickListener(new HottestMagazineOnClickListener(magazine1.term_id));
@@ -124,7 +264,10 @@ public class NewestFragment extends android.app.Fragment {
         scrollViewLayout.addView(view);
     }
 
-    public void addMagazine(Magazine magazine) {
+    public void addMagazine(final Magazine magazine) {
+        if (magazine == null) {
+            return;
+        }
         View view;
         try {
             view = getActivity().getLayoutInflater().inflate(R.layout.magazine, null);
@@ -138,7 +281,54 @@ public class NewestFragment extends android.app.Fragment {
         t1.getPaint().setFakeBoldText(true);
         t1.setText(magazine.name);
         m1.setText(magazine.description);
-        ImageView i1 = (ImageView)view.findViewById(R.id.magazineCover1);
+        final ImageView i1 = (ImageView)view.findViewById(R.id.magazineCover1);
+        final String src1 = Constants.MAGAZINE_COVER_PATH + File.separator + magazine.coverImage.substring(magazine.coverImage.lastIndexOf("/") + 1);
+        final File image1 = new File(src1);
+        new AsyncTask<String, String, String>() {
+            @Override
+            protected String doInBackground(String... params) {
+                if (image1.exists()) {
+                    return null;
+                }
+                try {
+                    URL Url;
+                    Url = new URL(magazine.coverImage);
+                    URLConnection conn = Url.openConnection();
+                    conn.connect();
+                    InputStream is = conn.getInputStream();
+                    int fileSize = conn.getContentLength();
+                    if ( fileSize <= 0 ) {
+                        throw new RuntimeException("无法获知文件大小 ");
+                    }
+                    if (is == null) {
+                        throw new RuntimeException("无法获取文件");
+                    }
+                    @SuppressWarnings("resource")
+                    FileOutputStream FOS = new FileOutputStream(src1);
+                    byte buf[] = new byte[1024];
+                    @SuppressWarnings("unused")
+                    int downLoadFilePosition = 0;
+                    int numRead;
+                    while ((numRead = is.read(buf)) != -1) {
+                        FOS.write(buf, 0, numRead);
+                        downLoadFilePosition += numRead;
+                    }
+                    is.close();
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                if (magazine.coverImage != null && !magazine.coverImage.equals("")) {
+                    i1.setImageBitmap(BitmapFactory.decodeFile(src1));
+                    i1.setLayoutParams(new LinearLayout.LayoutParams(Constants.getMagazineCoverWidth(), Constants.getMagazineCoverHeight(src1)));
+                }
+            }
+        }.execute();
 
         TextView t2 = (TextView)view.findViewById(R.id.articleTitle2);
         TextView m2 = (TextView)view.findViewById(R.id.magazineInfo2);
@@ -166,6 +356,7 @@ public class NewestFragment extends android.app.Fragment {
     public void initSlide() {
         int size = MainActivity.backend.slider.size();
         String[] urls = new String[size];
+        Log.d("johnson", "slider number: " + urls.length);
         for (int i = 0; i < size; i++) {
             urls[i] = MainActivity.backend.slider.get(i).url;
         }
@@ -182,13 +373,16 @@ public class NewestFragment extends android.app.Fragment {
             imageViewList.add(imageView);
             final String src = Constants.SLIDER_PATH + url.substring(url.lastIndexOf("/") + 1);
             File sliderImage = new File(src);
+            Log.d("johnson", "slider: " + src);
             if (sliderImage.exists()) {
-                imageView.setImageBitmap(BitmapFactory.decodeFile(src));
+                Log.d("johnson", "slider exists: " + src);
+                imageView.setImageBitmap(BitmapFactory.decodeFile(sliderImage.getAbsolutePath()));
             }
             else {
                 new AsyncTask<String, String, String>() {
                     @Override
                     protected String doInBackground(String... params) {
+                        Log.d("johnson", "fetch " + src);
                         try {
                             URL Url;
                             Url = new URL(url);
@@ -220,7 +414,9 @@ public class NewestFragment extends android.app.Fragment {
 
                     @Override
                     protected void onPostExecute(String s) {
-                        imageView.setImageBitmap(BitmapFactory.decodeFile(src));
+//                        imageView.setImageBitmap(BitmapFactory.decodeFile(src));
+                        imageView.setImageBitmap(BitmapFactory.decodeFile("/mnt/sdcard/DCIM/Camera/b.png"));
+                        Log.d("johnson", "set slid " + src);
                     }
                 }.execute();
             }
@@ -250,6 +446,30 @@ public class NewestFragment extends android.app.Fragment {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics;
+    }
+
+    void initMagazines() {
+        clearMagazines();
+        addMagazines();
+    }
+
+    void clearMagazines() {
+        while (scrollViewLayout.getChildCount() > 1) {
+            scrollViewLayout.removeViewAt(scrollViewLayout.getChildCount() - 1);
+        }
+    }
+
+    void addMagazines() {
+        ArrayList<Integer> IDs = Constants.getNewestMagazines();
+        for (int i = 0;i < IDs.size(); i += 2) {
+            if (i + 1 < IDs.size()) {
+                addMagazine(MainActivity.backend.getMagazineByID(IDs.get(i)),
+                        MainActivity.backend.getMagazineByID(IDs.get(i + 1)));
+            }
+            else {
+                addMagazine(MainActivity.backend.getMagazineByID(IDs.get(i)));
+            }
+        }
     }
 
     private class GetDataTask extends AsyncTask<Void, Void, String[]> {

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <RelativeLayout
+        android:id="@+id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView
@@ -33,6 +34,8 @@
             android:layout_marginTop="16dp"/>
     </RelativeLayout>
     <LinearLayout
+        android:id="@+id/noEmpty"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible">

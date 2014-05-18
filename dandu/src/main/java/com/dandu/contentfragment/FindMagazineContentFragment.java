@@ -56,18 +56,18 @@ public class FindMagazineContentFragment extends ContentFragment{
         };
     }
 
+    public FindMagazineContentFragment() {
+        super(MainActivity.slidingMenu, FIND_MAGAZINE);
+    }
+
     public void setMagazineID(int magazineID) {
         this.magazineID =magazineID;
         if (magazineID == oldMagazineID) {
             return;
         }
         magazine = MainActivity.backend.getMagazineByID(magazineID);
-        Log.d("johnson", magazineID + "&&" + oldMagazineID);
-        while (magazineLayout != null && magazineLayout.getChildCount() > 1) {
-            magazineLayout.removeViewAt(magazineLayout.getChildCount() - 1);
-        }
         oldMagazineID = magazineID;
-        MainActivity.backend.getPostsByMagazineID(magazineID, 10);
+//        MainActivity.backend.getPostsByMagazineID(magazineID, 10);
 //        List<Post> postList = magazine.posts;
 //        for (Post post: postList) {
 //            addArticleList(post);
@@ -150,6 +150,12 @@ public class FindMagazineContentFragment extends ContentFragment{
         //post.id = 0 is a debug flag
         articleListLayout.setOnClickListener(new ArticleOnClickListener(magazineID, 0));
 
+    }
+
+    public void clear() {
+        while (magazineLayout != null && magazineLayout.getChildCount() > 1) {
+            magazineLayout.removeViewAt(magazineLayout.getChildCount() - 1);
+        }
     }
 
     @Override

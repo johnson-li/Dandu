@@ -3,9 +3,11 @@ package com.dandu.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,9 +16,11 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 
+import com.dandu.constant.Constants;
 import com.dandu.contentfragment.ContentFragment;
 import com.fudan.dandu.dandu.dandu.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -59,6 +63,9 @@ public class CoverActivity extends Activity{
                 }
             }
         }.start();
+        Constants.userName = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("userName", "");
+        Constants.password = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("password", "");
+        init();
     }
 
     void changeView() {
@@ -66,7 +73,7 @@ public class CoverActivity extends Activity{
         coverList.add(R.drawable.cover1);
         coverList.add(R.drawable.cover2);
         ImageView coverImage = (ImageView)findViewById(R.id.coverImage);
-        coverImage.setImageResource(coverList.get(new Random().nextInt(2)));
+        coverImage.setImageResource(coverList.get(1));
         coverImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +86,18 @@ public class CoverActivity extends Activity{
                 finish();
             }
         });
+    }
+
+    public void init() {
+        File file = new File(Constants.CACHE);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        file = new File(Constants.MAGAZINE_COVER_PATH);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        Constants.updateBookMark();
     }
 
 }

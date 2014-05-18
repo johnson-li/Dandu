@@ -2,7 +2,10 @@ package com.dandu.contentfragment;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dandu.activity.MainActivity;
+import com.dandu.constant.Constants;
 import com.dandu.slidefragment.CollectArticleFragment;
 import com.dandu.slidefragment.CollectMagazineFragment;
 import com.fudan.dandu.dandu.dandu.R;
@@ -64,8 +68,13 @@ public class CollectContentFragment extends ContentFragment{
 
     public void intiImageView(View view) {
         underline = (ImageView)view.findViewById(R.id.underline);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.underline_black);
         screenWidth = MainActivity.screenWidth;
         offset = screenWidth / 2;
+        if (bitmap == null) {
+            Log.d("johnson", "bitmap null");
+        }
+        underline.setImageBitmap(Constants.cutBitmap(bitmap, offset, bitmap.getHeight()));
     }
 
     public void initFragments() {

@@ -20,7 +20,7 @@ public class ImageActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
         ImageView imageView = (ImageView)findViewById(R.id.imageView);
-        displayImage(imageView);
+//        displayImage(imageView);
 
     }
 

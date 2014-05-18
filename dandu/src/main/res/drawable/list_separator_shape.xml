@@ -4,6 +4,6 @@
     android:shape="rectangle"
     <solid android:color="@color/list_separator" />
     <size
-        android:width="500dp"
+        android:width="600dp"
         android:height="1dp" />
 </shape>

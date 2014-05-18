@@ -43,6 +43,7 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
     public static FindMagazineInfoContentFragment findMagazineInfoContentFragment;
     public static FindArticleContentFragmentWeb findArticleContentFragment;
     public static SlidingMenu slidingMenu;
+    public static MenuFragment rightMenuFragment;
     public static Backend backend;
     Handler backendHandler;
     ArrayList<Integer> hotIDs = new ArrayList<Integer>();
@@ -73,7 +74,7 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
         findMagazineInfoContentFragment = new FindMagazineInfoContentFragment(slidingMenu);
         findArticleContentFragment = new FindArticleContentFragmentWeb(slidingMenu);
         changeLeftFragment(findContentFragment);
-        MenuFragment rightMenuFragment = new MenuFragment();
+        rightMenuFragment = new MenuFragment();
         changeRightFragment(rightMenuFragment);
         initBackend();
 
@@ -231,9 +232,9 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
     }
 
     public static void setArticleID(int magazineID, int postID) {
-        if (findArticleContentFragment.postID != postID) {
+//        if (findArticleContentFragment.postID != postID) {
             findArticleContentFragment.setArticleID(magazineID, postID);
-        }
+//        }
     }
 
     void initBackend() {
@@ -271,7 +272,7 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
 //                    latestMagazine = backend.getMagazineByID( backend.magazineIDsOrderByTime.get(0) );
 //                    Log.d( Constants.TAG, latestMagazine.toString() );
                     backend.getMagazinesIDByHot(0, 10, hotIDs);
-                    addMagazines();
+//                    addMagazines();
                     //现在取回最新的magazine的文章列表
                     //这步可以拿出来写到一个Button上，但必须保证按这个Button前收到这个消息了。
                     //因为逻辑上如果没收到这个消息，下面这个函数的参数根本就不知道
@@ -318,16 +319,17 @@ public class MainActivity extends SlidingFragmentActivity implements MenuFragmen
                 {
                     Log.d( Constants.TAG, "BACKEND_MSG_GETMAGAZINESIDBYHOT_COMPLETED" );
                     Log.d( Constants.TAG, "hottest " + hotIDs.toString() );
-                    hotIDs.remove(3);
-                    for (int i = 0;i < hotIDs.size(); i += 2) {
-                        if (i + 1 < hotIDs.size()) {
-                            findContentFragment.addHottestMagazine(backend.getMagazineByID(hotIDs.get(i)),
-                                    backend.getMagazineByID(hotIDs.get(i + 1)));
-                        }
-                        else {
-                            findContentFragment.addHottestMagazine(backend.getMagazineByID(hotIDs.get(i)));
-                        }
-                    }
+//                    hotIDs.remove(2);
+//                    hotIDs.remove(0);
+//                    for (int i = 0;i < hotIDs.size(); i += 2) {
+//                        if (i + 1 < hotIDs.size()) {
+//                            findContentFragment.addHottestMagazine(backend.getMagazineByID(hotIDs.get(i)),
+//                                    backend.getMagazineByID(hotIDs.get(i + 1)));
+//                        }
+//                        else {
+//                            findContentFragment.addHottestMagazine(backend.getMagazineByID(hotIDs.get(i)));
+//                        }
+//                    }
                 }
                 if ( msg.what == Backend.BACKEND_MSG_GETSLIDER_COMPLETED )
                 {

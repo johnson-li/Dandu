@@ -1,15 +1,13 @@
 package com.dandu.fdureader;
 
 import org.xmlrpc.android.*;
-
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-
 import com.dandu.activity.MainActivity;
+import com.dandu.constant.Constants;
 import com.dandu.contentfragment.FindContentFragment;
 import com.dandu.contentfragment.FindMagazineContentFragment;
-
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -39,10 +37,10 @@ public class Backend
 	public ArrayList<Press> presses = new ArrayList<Press>();
 	
 	//记录是否登录，在使用收藏有关的函数时，请先检查此变量值
-	public Boolean isLogined = false;
+	public Boolean isLogined = Constants.isLogin();
 	//储存用户的账号和密码
-	public String username="";
-	public String password="";
+	public String username = Constants.userName;
+	public String password = Constants.password;
 	
 	//所有期刊的ID，ID已经按降序排列，ID越大，表示这个期刊越新
 	//此数组在调用getTerms之后才有效
@@ -166,7 +164,7 @@ public class Backend
 	{
 		for ( Press p : presses )
 		{
-			if ( p.term_id == id )
+			if ( p.term_id.equals(id))
 			{
 				return p;
 			}
@@ -181,7 +179,7 @@ public class Backend
 		{
 			for( Magazine m : p.magazines )
 			{
-				if ( m.term_id == id )
+				if ( m.term_id.equals(id))
 				{
 					return m;
 				}
@@ -199,7 +197,7 @@ public class Backend
 			{
 				for( Post curPost : m.posts )
 				{
-					if ( curPost.postID == id )
+					if ( curPost.postID .equals(id))
 					{
 						return curPost;
 					}
@@ -259,13 +257,13 @@ public class Backend
 		return;
 	}
 	
-	static private final String TAG = "BackendDebugging";
-	static private final String BLOG_USERNAME = "reader";
-	static private final String BLOG_PASSWORD = "dandu";
-	static private final String WPAPI_GETPOST = "wp.getPost";
-	static private final int BLOG_ID = 1;
-	static private final String WPAPI_POST_CONTENT = "post_content";
-	static private final String WPAPI_GETTERMS = "wp.getTerms";
+	static public final String TAG = "BackendDebugging";
+	static public final String BLOG_USERNAME = "reader";
+	static public final String BLOG_PASSWORD = "dandu";
+	static public final String WPAPI_GETPOST = "wp.getPost";
+	static public final int BLOG_ID = 1;
+	static public final String WPAPI_POST_CONTENT = "post_content";
+	static public final String WPAPI_GETTERMS = "wp.getTerms";
 	
 
 	private Handler backendHandler;
@@ -449,7 +447,7 @@ public class Backend
 					curTerm.name = (String)curTermMap.get( "name" );
 					curTerm.slug = (String)curTermMap.get( "slug" );
 					curTerm.parent = Integer.valueOf( (String)curTermMap.get( "parent" ) );
-					curTerm.coverImage = (String)curTermMap.get( "image" );
+					curTerm.coverImage = (String)curTermMap.get( "cover" );
 					ts.add(curTerm);
 				}
 				for( Term curTerm : ts )
@@ -477,6 +475,7 @@ public class Backend
 				}
 				Collections.sort( magazineIDsOrderByTime );
 				Collections.reverse( magazineIDsOrderByTime );
+                Constants.setNewestMagazines(magazineIDsOrderByTime);
 				Message msg = new Message();
 				msg.what = BACKEND_MSG_GETTERMS_COMPLETED;
 				backendHandler.sendMessage(msg);
